@@ -47,13 +47,15 @@
 			</button>
 		{/each}
 	</div>
-	{#if winner === 'draw'}
-		<p class="mb-4 text-2xl">It's a draw!</p>
-	{:else if winner}
-		<p class="mb-4 text-2xl">{winner} wins!</p>
-	{:else}
-		<p class="mb-4 text-xl">Current player: {currentPlayer}</p>
-	{/if}
+	<p class="mb-4 min-w-45 text-center text-2xl">
+		{#if winner === 'draw'}
+			It's a draw!
+		{:else if winner}
+			{winner} wins!
+		{:else}
+			Current player: {currentPlayer}
+		{/if}
+	</p>
 	<button class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600" onclick={resetGame}>
 		Reset Game
 	</button>
