@@ -11,6 +11,12 @@
 		>
 			Play Tic Tac Toe
 		</a>
+		<a
+			href={resolve('/slitherlink')}
+			class="block rounded bg-green-500 px-4 py-2 text-center text-white hover:bg-green-600 dark:hover:bg-green-800"
+		>
+			Play Slitherlink
+		</a>
 		<!-- Add more game links here as needed -->
 	</div>
 </div>
