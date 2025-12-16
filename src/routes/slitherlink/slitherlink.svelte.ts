@@ -18,6 +18,13 @@ export class SlitherlinkGame {
 		this.grid = $state(this.createInitialGrid(this.#width, this.#height))
 	}
 
+	#getElement = (row: number, col: number): GridElement => {
+		if (row < 0 || row >= this.grid.length || col < 0 || col >= this.grid[0].length) {
+			throw new Error(`Invalid grid position: ${row}, ${col}`)
+		}
+		return this.grid[row][col]
+	}
+
 	createInitialGrid(width: number, height: number): Grid {
 		const grid: Grid = []
 
@@ -47,7 +54,7 @@ export class SlitherlinkGame {
 	}
 
 	toggleLine(row: number, col: number, type: 'hline' | 'vline') {
-		const element = this.grid[row][col]
+		const element = this.#getElement(row, col)
 		if (element.type === type) {
 			element.state =
 				element.state === 'unknown'
@@ -62,16 +69,16 @@ export class SlitherlinkGame {
 	getAdjacentLineCount(row: number, col: number): number {
 		let count = 0
 		// Check all four sides
-		const top = this.grid[row - 1][col]
+		const top = this.#getElement(row - 1, col)
 		if (top.type === 'hline' && top.state === 'include') count++
 
-		const bottom = this.grid[row + 1][col]
+		const bottom = this.#getElement(row + 1, col)
 		if (bottom.type === 'hline' && bottom.state === 'include') count++
 
-		const left = this.grid[row][col - 1]
+		const left = this.#getElement(row, col - 1)
 		if (left.type === 'vline' && left.state === 'include') count++
 
-		const right = this.grid[row][col + 1]
+		const right = this.#getElement(row, col + 1)
 		if (right.type === 'vline' && right.state === 'include') count++
 
 		return count
@@ -91,7 +98,7 @@ export class SlitherlinkGame {
 		]
 
 		for (const [row, col] of cellPositions) {
-			const cell = this.grid[row][col]
+			const cell = this.#getElement(row, col)
 			if (cell.type === 'cell') {
 				cell.current = this.getAdjacentLineCount(row, col)
 			}
@@ -112,7 +119,7 @@ export class SlitherlinkGame {
 		]
 
 		for (const [row, col] of cellPositions) {
-			const cell = this.grid[row][col]
+			const cell = this.#getElement(row, col)
 			if (cell.type !== 'cell' || cell.actual === null) continue
 
 			if (cell.current !== cell.actual) return false
@@ -134,9 +141,9 @@ export class SlitherlinkGame {
 		// Map grid positions to dot indices: grid row/col 0,2,4,6 → dot row/col 0,1,2,3
 		const gridToDot = (pos: number) => pos / 2
 
-		for (let gridRow = 0; gridRow < 7; gridRow++) {
-			for (let gridCol = 0; gridCol < 7; gridCol++) {
-				const element = this.grid[gridRow][gridCol]
+		for (let gridRow = 0; gridRow < this.grid.length; gridRow++) {
+			for (let gridCol = 0; gridCol < this.grid[0].length; gridCol++) {
+				const element = this.#getElement(gridRow, gridCol)
 
 				if (element.type === 'hline' && element.state === 'include') {
 					// Connects dots to the left and right
@@ -226,9 +233,9 @@ export class SlitherlinkGame {
 
 	resetGame() {
 		// Reset all line states to 'unknown'
-		for (let row = 0; row < 7; row++) {
-			for (let col = 0; col < 7; col++) {
-				const element = this.grid[row][col]
+		for (let row = 0; row < this.grid.length; row++) {
+			for (let col = 0; col < this.grid[0].length; col++) {
+				const element = this.#getElement(row, col)
 				if (element.type === 'hline' || element.type === 'vline') {
 					element.state = 'unknown'
 				} else if (element.type === 'cell') {
@@ -258,9 +265,9 @@ export class SlitherlinkGame {
 			iterations++
 
 			// Apply basic rules
-			for (let row = 0; row < 7; row++) {
-				for (let col = 0; col < 7; col++) {
-					const element = this.grid[row][col]
+			for (let row = 0; row < this.grid.length; row++) {
+				for (let col = 0; col < this.grid[0].length; col++) {
+					const element = this.#getElement(row, col)
 					if (
 						(element.type === 'hline' || element.type === 'vline') &&
 						element.state === 'unknown'
@@ -294,7 +301,7 @@ export class SlitherlinkGame {
 		// Check if any adjacent cell requires this line to be present
 		const adjacentCells = this.getAdjacentCells(row, col, type)
 		for (const [cellRow, cellCol] of adjacentCells) {
-			const cell = this.grid[cellRow][cellCol]
+			const cell = this.#getElement(cellRow, cellCol)
 			if (cell.type === 'cell' && cell.actual !== null) {
 				const currentCount = this.getAdjacentLineCount(cellRow, cellCol)
 				if (currentCount < cell.actual) {
@@ -310,7 +317,7 @@ export class SlitherlinkGame {
 		// Check if any adjacent cell would exceed its limit if this line is included
 		const adjacentCells = this.getAdjacentCells(row, col, type)
 		for (const [cellRow, cellCol] of adjacentCells) {
-			const cell = this.grid[cellRow][cellCol]
+			const cell = this.#getElement(cellRow, cellCol)
 			if (cell.type === 'cell' && cell.actual !== null) {
 				const currentCount = this.getAdjacentLineCount(cellRow, cellCol)
 				if (currentCount >= cell.actual) {
