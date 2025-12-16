@@ -280,11 +280,12 @@
 							{/if}
 						{:else if element.type === 'hline'}
 							<div
-								class="h-2 w-full cursor-pointer {element.state === 'black'
-									? 'bg-black'
-									: element.state === 'gray'
-										? 'bg-gray-400'
-										: 'hover:bg-gray-300'}"
+								class={[
+									'h-1 w-6 cursor-pointer',
+									element.state === 'black' && 'bg-black',
+									element.state === 'gray' && 'bg-gray-400',
+									element.state === 'none' && 'hover:bg-gray-300',
+								]}
 								onclick={() => toggleHorizontalLine(rowIndex, colIndex)}
 								onkeydown={(e) => {
 									if (e.key === 'Enter' || e.key === ' ') {
@@ -297,11 +298,12 @@
 							></div>
 						{:else if element.type === 'vline'}
 							<div
-								class="h-full w-2 cursor-pointer {element.state === 'black'
-									? 'bg-black'
-									: element.state === 'gray'
-										? 'bg-gray-400'
-										: 'hover:bg-gray-300'}"
+								class={[
+									'h-6 w-1 cursor-pointer',
+									element.state === 'black' && 'bg-black',
+									element.state === 'gray' && 'bg-gray-400',
+									element.state === 'none' && 'hover:bg-gray-300',
+								]}
 								onclick={() => toggleVerticalLine(rowIndex, colIndex)}
 								onkeydown={(e) => {
 									if (e.key === 'Enter' || e.key === ' ') {
