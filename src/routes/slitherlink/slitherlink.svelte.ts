@@ -17,8 +17,8 @@ export class SlitherlinkGame {
 	status = $state('Grid loaded - ready to add line drawing functionality')
 
 	constructor(options: { width?: number; height?: number } = {}) {
-		this.#width = options.width ?? 3
-		this.#height = options.height ?? 3
+		this.#width = options.width ?? 12
+		this.#height = options.height ?? 12
 
 		this.generator()
 	}
@@ -183,6 +183,14 @@ export class SlitherlinkGame {
 
 	reset() {
 		this.#grid = this.#cache
+	}
+
+	get width(): number {
+		return this.#width
+	}
+
+	get height(): number {
+		return this.#height
 	}
 
 	solver(): boolean {
