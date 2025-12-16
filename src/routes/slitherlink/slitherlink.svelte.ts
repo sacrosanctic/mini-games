@@ -1,14 +1,13 @@
+import { SlitherlinkGenerator } from './generator'
+
 type HorizontalLineElement = { type: 'hline'; state: 'unknown' | 'include' | 'exclude' }
 type VerticalLineElement = { type: 'vline'; state: 'unknown' | 'include' | 'exclude' }
 type CellElement = { type: 'cell'; actual: number | null; current: number }
-
 type LineElement = HorizontalLineElement | VerticalLineElement
 
-type GridElement = { type: 'dot' } | CellElement | HorizontalLineElement | VerticalLineElement
-
-type Grid = GridElement[][]
-
 type Positioned<T> = T & { row: number; col: number }
+type GridElement = { type: 'dot' } | CellElement | HorizontalLineElement | VerticalLineElement
+type Grid = GridElement[][]
 
 export class SlitherlinkGame {
 	grid: Grid
@@ -19,9 +18,10 @@ export class SlitherlinkGame {
 	constructor(options: { width?: number; height?: number } = {}) {
 		this.#width = options.width ?? 3
 		this.#height = options.height ?? 3
-		this.grid = $state(this.createInitialGrid(this.#width, this.#height))
 
-		// todo: call create game
+		this.grid = $state(
+			this.createInitialGrid(this.#width, this.#height, new SlitherlinkGenerator()),
+		)
 	}
 
 	#getElement = (row: number, col: number): Positioned<GridElement> => {
@@ -32,6 +32,38 @@ export class SlitherlinkGame {
 			throw new Error(`Invalid grid position: ${row}, ${col}`)
 		}
 		return Object.assign(this.grid[row][col], { row, col })
+	}
+
+	convertPuzzleToGrid(puzzle: SlitherlinkGenerator): Grid {
+		const grid: Grid = []
+
+		for (let row = 0; row < 2 * puzzle.height + 1; row++) {
+			const gridRow: GridElement[] = []
+			for (let col = 0; col < 2 * puzzle.width + 1; col++) {
+				if (row % 2 === 0) {
+					// Even rows: dots and horizontal lines
+					if (col % 2 === 0) {
+						gridRow.push({ type: 'dot' })
+					} else {
+						gridRow.push({ type: 'hline', state: 'unknown' })
+					}
+				} else {
+					// Odd rows: vertical lines and cells
+					if (col % 2 === 0) {
+						gridRow.push({ type: 'vline', state: 'unknown' })
+					} else {
+						// Calculate cell position in puzzle coordinates
+						const cellRow = Math.floor(row / 2)
+						const cellCol = Math.floor(col / 2)
+						const actual = puzzle.cellNumbers[cellRow][cellCol]
+						gridRow.push({ type: 'cell', actual, current: 0 })
+					}
+				}
+			}
+			grid.push(gridRow)
+		}
+
+		return grid
 	}
 
 	createInitialGrid(width: number, height: number): Grid {
@@ -133,56 +165,12 @@ export class SlitherlinkGame {
 		this.status = 'Game reset - start drawing lines!'
 	}
 
-	checker(): boolean {}
-
-	generator(difficulty: 'easy' | 'medium' | 'hard' = 'medium') {
-		// For now, just reset to a known solvable puzzle
-		// TODO: Implement proper puzzle generation algorithm
-		this.grid = this.createInitialGrid(this.#width, this.#height)
-		this.status = `New ${difficulty} puzzle generated!`
+	check(): boolean {
+		return false // TODO: implement solution checking
 	}
 
 	solver(): boolean {
 		// Basic constraint propagation solver
 		// TODO: Implement full backtracking solver for complex cases
-		let changed = true
-		let iterations = 0
-		const maxIterations = 100
-
-		while (changed && iterations < maxIterations) {
-			changed = false
-			iterations++
-
-			// Apply basic rules
-			for (let row = 0; row < this.grid.length; row++) {
-				for (let col = 0; col < this.grid[0].length; col++) {
-					const element = this.#getElement(row, col)
-					if (
-						(element.type === 'hline' || element.type === 'vline') &&
-						element.state === 'unknown'
-					) {
-						// Check if this line must be included or excluded based on cell constraints
-						const mustInclude = this.#mustIncludeLine(element)
-						const mustExclude = this.#mustExcludeLine(element)
-
-						if (mustInclude && !mustExclude) {
-							element.state = 'include'
-							changed = true
-						} else if (mustExclude && !mustInclude) {
-							element.state = 'exclude'
-							changed = true
-						}
-					}
-				}
-			}
-
-			if (changed) {
-				this.updateCellCounts()
-			}
-		}
-
-		const isSolved = this.validateNumbers() && this.validateLoop()
-		this.status = isSolved ? 'Puzzle solved automatically!' : 'Could not solve puzzle automatically'
-		return isSolved
 	}
 }

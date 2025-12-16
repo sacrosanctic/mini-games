@@ -67,13 +67,13 @@
 	<div class="mt-4 flex flex-wrap gap-4">
 		<button
 			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-			onclick={() => game.generator('medium')}
+			onclick={() => game.reset()}
 		>
 			New Puzzle
 		</button>
 		<button
 			class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-			onclick={() => game.enhancedCheckSolution()}
+			onclick={() => game.check()}
 		>
 			Check Solution
 		</button>
