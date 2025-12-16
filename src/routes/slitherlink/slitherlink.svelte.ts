@@ -1,4 +1,4 @@
-import { SlitherlinkGenerator } from './generator'
+import { generateSlitherlinkPuzzle, type SimpleSlitherlinkPuzzle } from './generator'
 
 type HorizontalLineElement = { type: 'hline'; state: 'unknown' | 'include' | 'exclude' }
 type VerticalLineElement = { type: 'vline'; state: 'unknown' | 'include' | 'exclude' }
@@ -10,7 +10,8 @@ type GridElement = { type: 'dot' } | CellElement | HorizontalLineElement | Verti
 type Grid = GridElement[][]
 
 export class SlitherlinkGame {
-	grid: Grid
+	#grid: Grid = $state([])
+	#cache: Grid = []
 	#width: number
 	#height: number
 	status = $state('Grid loaded - ready to add line drawing functionality')
@@ -19,22 +20,24 @@ export class SlitherlinkGame {
 		this.#width = options.width ?? 3
 		this.#height = options.height ?? 3
 
-		this.grid = $state(
-			this.createInitialGrid(this.#width, this.#height, new SlitherlinkGenerator()),
-		)
+		this.generator()
+	}
+
+	get grid() {
+		return this.#grid
 	}
 
 	#getElement = (row: number, col: number): Positioned<GridElement> => {
-		const rowOutOfBounds = row < 0 || row >= this.grid.length
-		const colOutOfBounds = col < 0 || col >= this.grid[0].length
+		const rowOutOfBounds = row < 0 || row >= this.#grid.length
+		const colOutOfBounds = col < 0 || col >= this.#grid[0].length
 
 		if (rowOutOfBounds || colOutOfBounds) {
 			throw new Error(`Invalid grid position: ${row}, ${col}`)
 		}
-		return Object.assign(this.grid[row][col], { row, col })
+		return Object.assign(this.#grid[row][col], { row, col })
 	}
 
-	convertPuzzleToGrid(puzzle: SlitherlinkGenerator): Grid {
+	convertPuzzleToGrid(puzzle: SimpleSlitherlinkPuzzle): Grid {
 		const grid: Grid = []
 
 		for (let row = 0; row < 2 * puzzle.height + 1; row++) {
@@ -118,13 +121,13 @@ export class SlitherlinkGame {
 			// Horizontal line connects cells above and below
 			if (element.row > 0)
 				cells.push(this.#getElement(element.row - 1, element.col) as Positioned<CellElement>) // Cell above
-			if (element.row < this.grid.length - 1)
+			if (element.row < this.#grid.length - 1)
 				cells.push(this.#getElement(element.row + 1, element.col) as Positioned<CellElement>) // Cell below
 		} else {
 			// Vertical line connects cells left and right
 			if (element.col > 0)
 				cells.push(this.#getElement(element.row, element.col - 1) as Positioned<CellElement>) // Cell left
-			if (element.col < this.grid[0].length - 1)
+			if (element.col < this.#grid[0].length - 1)
 				cells.push(this.#getElement(element.row, element.col + 1) as Positioned<CellElement>) // Cell right
 		}
 
@@ -149,28 +152,22 @@ export class SlitherlinkGame {
 		return count
 	}
 
-	// todo: should just call create game
-	resetGame() {
-		// Reset all line states to 'unknown'
-		for (let row = 0; row < this.grid.length; row++) {
-			for (let col = 0; col < this.grid[0].length; col++) {
-				const element = this.#getElement(row, col)
-				if (element.type === 'hline' || element.type === 'vline') {
-					element.state = 'unknown'
-				} else if (element.type === 'cell') {
-					element.current = 0
-				}
-			}
-		}
-		this.status = 'Game reset - start drawing lines!'
+	checker(): boolean {
+		return false // TODO: implement solution checking
 	}
 
-	check(): boolean {
-		return false // TODO: implement solution checking
+	generator() {
+		this.#grid = this.convertPuzzleToGrid(generateSlitherlinkPuzzle(this.#width, this.#height))
+		this.#cache = $state.snapshot(this.#grid)
+	}
+
+	reset() {
+		this.#grid = this.#cache
 	}
 
 	solver(): boolean {
 		// Basic constraint propagation solver
 		// TODO: Implement full backtracking solver for complex cases
+		return false
 	}
 }
