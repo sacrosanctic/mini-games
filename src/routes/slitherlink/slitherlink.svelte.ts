@@ -59,15 +59,17 @@ export class SlitherlinkGame {
 
 	toggleLine(row: number, col: number, type: 'hline' | 'vline') {
 		const element = this.#getElement(row, col)
-		if (element.type === type) {
-			element.state =
-				element.state === 'unknown'
-					? 'include'
-					: element.state === 'include'
-						? 'exclude'
-						: 'unknown'
-			this.updateCellCounts()
+		if (element.type !== type) return
+
+		if (element.state === 'unknown') {
+			element.state = 'include'
+		} else if (element.state === 'include') {
+			element.state = 'exclude'
+		} else {
+			element.state = 'unknown'
 		}
+
+		this.updateCellCounts()
 	}
 
 	getAdjacentLineCount(row: number, col: number): number {
