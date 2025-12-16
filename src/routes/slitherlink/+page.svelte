@@ -27,11 +27,9 @@
 								<span
 									class={[
 										'text-lg font-bold',
-										element.current === element.actual
-											? 'text-gray-600 dark:text-gray-400'
-											: element.current > element.actual
-												? 'text-red-600 dark:text-red-400'
-												: 'text-blue-600 dark:text-blue-400',
+										element.current === element.actual && 'text-gray-600 dark:text-gray-400',
+										element.current > element.actual && 'text-red-600 dark:text-red-400',
+										element.current < element.actual && 'text-blue-600 dark:text-blue-400',
 									]}
 								>
 									{element.actual}
@@ -66,12 +64,24 @@
 		</div>
 	</div>
 
-	<div class="mt-4 flex gap-4">
+	<div class="mt-4 flex flex-wrap gap-4">
+		<button
+			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+			onclick={() => game.generatePuzzle('medium')}
+		>
+			New Puzzle
+		</button>
 		<button
 			class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-			onclick={() => game.checkSolution()}
+			onclick={() => game.enhancedCheckSolution()}
 		>
 			Check Solution
+		</button>
+		<button
+			class="rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-600"
+			onclick={() => game.solvePuzzle()}
+		>
+			Solve Puzzle
 		</button>
 		<button
 			class="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"

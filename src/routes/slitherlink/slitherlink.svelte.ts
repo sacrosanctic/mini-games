@@ -281,4 +281,125 @@ export class SlitherlinkGame {
 		}
 		this.status = 'Game reset - start drawing lines!'
 	}
+
+	generatePuzzle(difficulty: 'easy' | 'medium' | 'hard' = 'medium') {
+		// For now, just reset to a known solvable puzzle
+		// TODO: Implement proper puzzle generation algorithm
+		this.grid = this.createInitialGrid()
+		this.status = `New ${difficulty} puzzle generated!`
+	}
+
+	solvePuzzle(): boolean {
+		// Basic constraint propagation solver
+		// TODO: Implement full backtracking solver for complex cases
+		let changed = true
+		let iterations = 0
+		const maxIterations = 100
+
+		while (changed && iterations < maxIterations) {
+			changed = false
+			iterations++
+
+			// Apply basic rules
+			for (let row = 0; row < 7; row++) {
+				for (let col = 0; col < 7; col++) {
+					const element = this.grid[row][col]
+					if (
+						(element.type === 'hline' || element.type === 'vline') &&
+						element.state === 'unknown'
+					) {
+						// Check if this line must be included or excluded based on cell constraints
+						const mustInclude = this.mustIncludeLine(row, col, element.type)
+						const mustExclude = this.mustExcludeLine(row, col, element.type)
+
+						if (mustInclude && !mustExclude) {
+							element.state = 'include'
+							changed = true
+						} else if (mustExclude && !mustInclude) {
+							element.state = 'exclude'
+							changed = true
+						}
+					}
+				}
+			}
+
+			if (changed) {
+				this.updateCellCounts()
+			}
+		}
+
+		const isSolved = this.validateNumbers() && this.validateLoop()
+		this.status = isSolved ? 'Puzzle solved automatically!' : 'Could not solve puzzle automatically'
+		return isSolved
+	}
+
+	private mustIncludeLine(row: number, col: number, type: 'hline' | 'vline'): boolean {
+		// Check if any adjacent cell requires this line to be present
+		const adjacentCells = this.getAdjacentCells(row, col, type)
+		for (const [cellRow, cellCol] of adjacentCells) {
+			const cell = this.grid[cellRow][cellCol]
+			if (cell.type === 'cell' && cell.actual !== null) {
+				const currentCount = this.getAdjacentLineCount(cellRow, cellCol)
+				if (currentCount < cell.actual) {
+					// This cell still needs more lines
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	private mustExcludeLine(row: number, col: number, type: 'hline' | 'vline'): boolean {
+		// Check if any adjacent cell would exceed its limit if this line is included
+		const adjacentCells = this.getAdjacentCells(row, col, type)
+		for (const [cellRow, cellCol] of adjacentCells) {
+			const cell = this.grid[cellRow][cellCol]
+			if (cell.type === 'cell' && cell.actual !== null) {
+				const currentCount = this.getAdjacentLineCount(cellRow, cellCol)
+				if (currentCount >= cell.actual) {
+					// This cell already has enough lines
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	private getAdjacentCells(row: number, col: number, type: 'hline' | 'vline'): [number, number][] {
+		const cells: [number, number][] = []
+
+		if (type === 'hline') {
+			// Horizontal line connects cells above and below
+			if (row > 0) cells.push([row - 1, col]) // Cell above
+			if (row < 6) cells.push([row + 1, col]) // Cell below
+		} else {
+			// Vertical line connects cells left and right
+			if (col > 0) cells.push([row, col - 1]) // Cell left
+			if (col < 6) cells.push([row, col + 1]) // Cell right
+		}
+
+		return cells
+	}
+
+	enhancedCheckSolution() {
+		const numbersValid = this.validateNumbers()
+		const loopValid = this.validateLoop()
+
+		if (numbersValid && loopValid) {
+			this.status = '🎉 Correct! You solved the puzzle!'
+		} else if (!numbersValid) {
+			this.status = '❌ Numbers are not satisfied. Check the line counts around numbered cells.'
+		} else if (!loopValid) {
+			this.status = '❌ Lines do not form a single continuous loop.'
+		} else {
+			this.status = 'Grid loaded - ready to add line drawing functionality'
+		}
+
+		return {
+			isValid: numbersValid && loopValid,
+			numbersSatisfied: numbersValid,
+			loopValid: loopValid,
+			message: this.status,
+		}
+	}
 }
