@@ -83,17 +83,9 @@
 
 	let status = $state('Grid loaded - ready to add line drawing functionality')
 
-	function toggleHorizontalLine(row: number, col: number) {
+	function toggleLine(row: number, col: number, type: 'hline' | 'vline') {
 		const element = grid[row][col]
-		if (element.type === 'hline') {
-			element.state =
-				element.state === 'none' ? 'gray' : element.state === 'gray' ? 'black' : 'none'
-		}
-	}
-
-	function toggleVerticalLine(row: number, col: number) {
-		const element = grid[row][col]
-		if (element.type === 'vline') {
+		if (element.type === type) {
 			element.state =
 				element.state === 'none' ? 'gray' : element.state === 'gray' ? 'black' : 'none'
 		}
@@ -269,7 +261,7 @@
 		>
 			{#each grid as row, rowIndex (rowIndex)}
 				{#each row as element, colIndex (colIndex)}
-					<div class="flex items-center justify-center">
+					<div class="flex items-center justify-center" data-type={element.type}>
 						{#if element.type === 'dot'}
 							<div class="h-2 w-2 rounded-full bg-gray-800 dark:bg-gray-200"></div>
 						{:else if element.type === 'cell'}
@@ -286,10 +278,10 @@
 									element.state === 'gray' && 'bg-gray-400',
 									element.state === 'none' && 'hover:bg-gray-300',
 								]}
-								onclick={() => toggleHorizontalLine(rowIndex, colIndex)}
+								onclick={() => toggleLine(rowIndex, colIndex, 'hline')}
 								onkeydown={(e) => {
 									if (e.key === 'Enter' || e.key === ' ') {
-										toggleHorizontalLine(rowIndex, colIndex)
+										toggleLine(rowIndex, colIndex, 'hline')
 										e.preventDefault()
 									}
 								}}
@@ -304,10 +296,10 @@
 									element.state === 'gray' && 'bg-gray-400',
 									element.state === 'none' && 'hover:bg-gray-300',
 								]}
-								onclick={() => toggleVerticalLine(rowIndex, colIndex)}
+								onclick={() => toggleLine(rowIndex, colIndex, 'vline')}
 								onkeydown={(e) => {
 									if (e.key === 'Enter' || e.key === ' ') {
-										toggleVerticalLine(rowIndex, colIndex)
+										toggleLine(rowIndex, colIndex, 'vline')
 										e.preventDefault()
 									}
 								}}
