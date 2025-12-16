@@ -1,34 +1,17 @@
-export type GridElement =
+type GridElement =
 	| { type: 'dot' }
 	| { type: 'cell'; actual: number | null; current: number }
 	| { type: 'hline'; state: 'unknown' | 'include' | 'exclude' }
 	| { type: 'vline'; state: 'unknown' | 'include' | 'exclude' }
 
-export type GameState = {
-	grid: GridElement[][]
-	status: string
-}
+type Grid = GridElement[][]
 
 export class SlitherlinkGame {
-	state: GameState
+	grid: Grid
+	status = $state('Grid loaded - ready to add line drawing functionality')
 
 	constructor(initialGrid?: GridElement[][]) {
-		this.state = {
-			grid: initialGrid || this.createInitialGrid(),
-			status: 'Grid loaded - ready to add line drawing functionality',
-		}
-	}
-
-	get grid(): GridElement[][] {
-		return this.state.grid
-	}
-
-	get status(): string {
-		return this.state.status
-	}
-
-	set status(value: string) {
-		this.state.status = value
+		this.grid = $state(initialGrid ?? this.createInitialGrid())
 	}
 
 	createInitialGrid(): GridElement[][] {
@@ -107,7 +90,7 @@ export class SlitherlinkGame {
 	}
 
 	toggleLine(row: number, col: number, type: 'hline' | 'vline') {
-		const element = this.state.grid[row][col]
+		const element = this.grid[row][col]
 		if (element.type === type) {
 			element.state =
 				element.state === 'unknown'
@@ -122,16 +105,16 @@ export class SlitherlinkGame {
 	getAdjacentLineCount(row: number, col: number): number {
 		let count = 0
 		// Check all four sides
-		const top = this.state.grid[row - 1][col]
+		const top = this.grid[row - 1][col]
 		if (top.type === 'hline' && top.state === 'include') count++
 
-		const bottom = this.state.grid[row + 1][col]
+		const bottom = this.grid[row + 1][col]
 		if (bottom.type === 'hline' && bottom.state === 'include') count++
 
-		const left = this.state.grid[row][col - 1]
+		const left = this.grid[row][col - 1]
 		if (left.type === 'vline' && left.state === 'include') count++
 
-		const right = this.state.grid[row][col + 1]
+		const right = this.grid[row][col + 1]
 		if (right.type === 'vline' && right.state === 'include') count++
 
 		return count
@@ -151,7 +134,7 @@ export class SlitherlinkGame {
 		]
 
 		for (const [row, col] of cellPositions) {
-			const cell = this.state.grid[row][col]
+			const cell = this.grid[row][col]
 			if (cell.type === 'cell') {
 				cell.current = this.getAdjacentLineCount(row, col)
 			}
@@ -172,7 +155,7 @@ export class SlitherlinkGame {
 		]
 
 		for (const [row, col] of cellPositions) {
-			const cell = this.state.grid[row][col]
+			const cell = this.grid[row][col]
 			if (cell.type !== 'cell' || cell.actual === null) continue
 
 			if (cell.current !== cell.actual) return false
@@ -196,7 +179,7 @@ export class SlitherlinkGame {
 
 		for (let gridRow = 0; gridRow < 7; gridRow++) {
 			for (let gridCol = 0; gridCol < 7; gridCol++) {
-				const element = this.state.grid[gridRow][gridCol]
+				const element = this.grid[gridRow][gridCol]
 
 				if (element.type === 'hline' && element.state === 'include') {
 					// Connects dots to the left and right
@@ -276,12 +259,11 @@ export class SlitherlinkGame {
 		const loopValid = this.validateLoop()
 
 		if (numbersValid && loopValid) {
-			this.state.status = '🎉 Correct! You solved the puzzle!'
+			this.status = '🎉 Correct! You solved the puzzle!'
 		} else if (!numbersValid) {
-			this.state.status =
-				'❌ Numbers are not satisfied. Check the line counts around numbered cells.'
+			this.status = '❌ Numbers are not satisfied. Check the line counts around numbered cells.'
 		} else if (!loopValid) {
-			this.state.status = '❌ Lines do not form a single continuous loop.'
+			this.status = '❌ Lines do not form a single continuous loop.'
 		}
 	}
 
@@ -289,7 +271,7 @@ export class SlitherlinkGame {
 		// Reset all line states to 'unknown'
 		for (let row = 0; row < 7; row++) {
 			for (let col = 0; col < 7; col++) {
-				const element = this.state.grid[row][col]
+				const element = this.grid[row][col]
 				if (element.type === 'hline' || element.type === 'vline') {
 					element.state = 'unknown'
 				} else if (element.type === 'cell') {
@@ -297,6 +279,6 @@ export class SlitherlinkGame {
 				}
 			}
 		}
-		this.state.status = 'Game reset - start drawing lines!'
+		this.status = 'Game reset - start drawing lines!'
 	}
 }

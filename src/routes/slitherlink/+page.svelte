@@ -3,8 +3,6 @@
 	import { SlitherlinkGame } from './slitherlink.svelte'
 
 	const game = new SlitherlinkGame()
-
-	$inspect(game)
 </script>
 
 <div class="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
