@@ -8,85 +8,42 @@ type Grid = GridElement[][]
 
 export class SlitherlinkGame {
 	grid: Grid
+	#width: number
+	#height: number
 	status = $state('Grid loaded - ready to add line drawing functionality')
 
-	constructor(initialGrid?: GridElement[][]) {
-		this.grid = $state(initialGrid ?? this.createInitialGrid())
+	constructor(options: { width?: number; height?: number } = {}) {
+		this.#width = options.width ?? 3
+		this.#height = options.height ?? 3
+		this.grid = $state(this.createInitialGrid(this.#width, this.#height))
 	}
 
-	createInitialGrid(): GridElement[][] {
-		return [
-			// Row 0: dots and horizontal lines
-			[
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-			],
-			// Row 1: vertical lines and cells
-			[
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: 1, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: null, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: 2, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-			],
-			// Row 2: dots and horizontal lines
-			[
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-			],
-			// Row 3: vertical lines and cells
-			[
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: null, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: 3, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: null, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-			],
-			// Row 4: dots and horizontal lines
-			[
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-			],
-			// Row 5: vertical lines and cells
-			[
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: 2, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: null, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-				{ type: 'cell', actual: 1, current: 0 },
-				{ type: 'vline', state: 'unknown' },
-			],
-			// Row 6: dots and horizontal lines
-			[
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-				{ type: 'hline', state: 'unknown' },
-				{ type: 'dot' },
-			],
-		]
+	createInitialGrid(width: number, height: number): Grid {
+		const grid: Grid = []
+
+		for (let row = 0; row < 2 * height + 1; row++) {
+			const gridRow: GridElement[] = []
+			for (let col = 0; col < 2 * width + 1; col++) {
+				if (row % 2 === 0) {
+					// Even rows: dots and horizontal lines
+					if (col % 2 === 0) {
+						gridRow.push({ type: 'dot' })
+					} else {
+						gridRow.push({ type: 'hline', state: 'unknown' })
+					}
+				} else {
+					// Odd rows: vertical lines and cells
+					if (col % 2 === 0) {
+						gridRow.push({ type: 'vline', state: 'unknown' })
+					} else {
+						gridRow.push({ type: 'cell', actual: null, current: 0 })
+					}
+				}
+			}
+			grid.push(gridRow)
+		}
+
+		return grid
 	}
 
 	toggleLine(row: number, col: number, type: 'hline' | 'vline') {
@@ -285,7 +242,7 @@ export class SlitherlinkGame {
 	generatePuzzle(difficulty: 'easy' | 'medium' | 'hard' = 'medium') {
 		// For now, just reset to a known solvable puzzle
 		// TODO: Implement proper puzzle generation algorithm
-		this.grid = this.createInitialGrid()
+		this.grid = this.createInitialGrid(this.#width, this.#height)
 		this.status = `New ${difficulty} puzzle generated!`
 	}
 
