@@ -314,8 +314,8 @@
 							<div
 								class={[
 									'h-2 w-full cursor-pointer',
-									element.state === 'exclude' && 'bg-black',
-									element.state === 'include' && 'bg-gray-400',
+									element.state === 'include' && 'bg-black',
+									element.state === 'exclude' && 'bg-gray-700',
 									element.state === 'unknown' && 'hover:bg-gray-300',
 								]}
 								onclick={() => toggleLine(rowIndex, colIndex, element.type)}
@@ -332,8 +332,8 @@
 							<div
 								class={[
 									'h-full w-2 cursor-pointer',
-									element.state === 'exclude' && 'bg-black',
-									element.state === 'include' && 'bg-gray-400',
+									element.state === 'include' && 'bg-black',
+									element.state === 'exclude' && 'bg-gray-700',
 									element.state === 'unknown' && 'hover:bg-gray-300',
 								]}
 								onclick={() => toggleLine(rowIndex, colIndex, element.type)}
