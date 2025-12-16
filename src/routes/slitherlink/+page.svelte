@@ -67,7 +67,7 @@
 	<div class="mt-4 flex flex-wrap gap-4">
 		<button
 			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-			onclick={() => game.generatePuzzle('medium')}
+			onclick={() => game.generator('medium')}
 		>
 			New Puzzle
 		</button>
@@ -79,7 +79,7 @@
 		</button>
 		<button
 			class="rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-600"
-			onclick={() => game.solvePuzzle()}
+			onclick={() => game.solver()}
 		>
 			Solve Puzzle
 		</button>
