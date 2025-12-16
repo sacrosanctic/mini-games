@@ -100,16 +100,16 @@
 		let count = 0
 		// Check all four sides
 		const top = grid[row - 1][col]
-		if (top.type === 'hline' && top.state === 'exclude') count++
+		if (top.type === 'hline' && top.state === 'include') count++
 
 		const bottom = grid[row + 1][col]
-		if (bottom.type === 'hline' && bottom.state === 'exclude') count++
+		if (bottom.type === 'hline' && bottom.state === 'include') count++
 
 		const left = grid[row][col - 1]
-		if (left.type === 'vline' && left.state === 'exclude') count++
+		if (left.type === 'vline' && left.state === 'include') count++
 
 		const right = grid[row][col + 1]
-		if (right.type === 'vline' && right.state === 'exclude') count++
+		if (right.type === 'vline' && right.state === 'include') count++
 
 		return count
 	}
@@ -176,7 +176,7 @@
 			for (let gridCol = 0; gridCol < 7; gridCol++) {
 				const element = grid[gridRow][gridCol]
 
-				if (element.type === 'hline' && element.state === 'exclude') {
+				if (element.type === 'hline' && element.state === 'include') {
 					// Connects dots to the left and right
 					const dotRow = gridToDot(gridRow)
 					const leftDotCol = gridToDot(gridCol - 1)
@@ -311,41 +311,27 @@
 								</span>
 							{/if}
 						{:else if element.type === 'hline'}
-							<div
+							<button
 								class={[
 									'h-2 w-full cursor-pointer',
 									element.state === 'include' && 'bg-black',
 									element.state === 'exclude' && 'bg-gray-700',
 									element.state === 'unknown' && 'hover:bg-gray-300',
 								]}
+								aria-label="Toggle horizontal line"
 								onclick={() => toggleLine(rowIndex, colIndex, element.type)}
-								onkeydown={(e) => {
-									if (e.key === 'Enter' || e.key === ' ') {
-										toggleLine(rowIndex, colIndex, element.type)
-										e.preventDefault()
-									}
-								}}
-								role="button"
-								tabindex="0"
-							></div>
+							></button>
 						{:else if element.type === 'vline'}
-							<div
+							<button
 								class={[
 									'h-full w-2 cursor-pointer',
 									element.state === 'include' && 'bg-black',
 									element.state === 'exclude' && 'bg-gray-700',
 									element.state === 'unknown' && 'hover:bg-gray-300',
 								]}
+								aria-label="Toggle vertical line"
 								onclick={() => toggleLine(rowIndex, colIndex, element.type)}
-								onkeydown={(e) => {
-									if (e.key === 'Enter' || e.key === ' ') {
-										toggleLine(rowIndex, colIndex, element.type)
-										e.preventDefault()
-									}
-								}}
-								role="button"
-								tabindex="0"
-							></div>
+							></button>
 						{/if}
 					</div>
 				{/each}
