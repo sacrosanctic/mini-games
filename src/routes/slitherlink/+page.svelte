@@ -265,11 +265,11 @@
 	<div class="inline-block border-2 border-gray-600 bg-white p-4 dark:bg-gray-800">
 		<div
 			class="grid gap-0"
-			style="grid-template-columns: repeat(7, 32px); grid-template-rows: repeat(7, 32px);"
+			style="grid-template-columns: 16px 32px 16px 32px 16px 32px 16px ; grid-template-rows: 16px 32px 16px 32px 16px 32px 16px;"
 		>
 			{#each grid as row, rowIndex (rowIndex)}
 				{#each row as element, colIndex (colIndex)}
-					<div class="relative flex h-8 w-8 items-center justify-center">
+					<div class="flex items-center justify-center">
 						{#if element.type === 'dot'}
 							<div class="h-2 w-2 rounded-full bg-gray-800 dark:bg-gray-200"></div>
 						{:else if element.type === 'cell'}
@@ -281,7 +281,7 @@
 						{:else if element.type === 'hline'}
 							<div
 								class={[
-									'h-1 w-6 cursor-pointer',
+									'h-2 w-full cursor-pointer',
 									element.state === 'black' && 'bg-black',
 									element.state === 'gray' && 'bg-gray-400',
 									element.state === 'none' && 'hover:bg-gray-300',
@@ -299,7 +299,7 @@
 						{:else if element.type === 'vline'}
 							<div
 								class={[
-									'h-6 w-1 cursor-pointer',
+									'h-full w-2 cursor-pointer',
 									element.state === 'black' && 'bg-black',
 									element.state === 'gray' && 'bg-gray-400',
 									element.state === 'none' && 'hover:bg-gray-300',
