@@ -19,9 +19,13 @@ export class SlitherlinkGame {
 	}
 
 	#getElement = (row: number, col: number): GridElement => {
-		if (row < 0 || row >= this.grid.length || col < 0 || col >= this.grid[0].length) {
+		const rowOutOfBounds = row < 0 || row >= this.grid.length
+		const colOutOfBounds = col < 0 || col >= this.grid[0].length
+
+		if (rowOutOfBounds || colOutOfBounds) {
 			throw new Error(`Invalid grid position: ${row}, ${col}`)
 		}
+
 		return this.grid[row][col]
 	}
 
