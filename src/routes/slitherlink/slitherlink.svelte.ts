@@ -1,10 +1,14 @@
-type GridElement =
-	| { type: 'dot' }
-	| { type: 'cell'; actual: number | null; current: number }
-	| { type: 'hline'; state: 'unknown' | 'include' | 'exclude' }
-	| { type: 'vline'; state: 'unknown' | 'include' | 'exclude' }
+type HorizontalLineElement = { type: 'hline'; state: 'unknown' | 'include' | 'exclude' }
+type VerticalLineElement = { type: 'vline'; state: 'unknown' | 'include' | 'exclude' }
+type CellElement = { type: 'cell'; actual: number | null; current: number }
+
+type LineElement = HorizontalLineElement | VerticalLineElement
+
+type GridElement = { type: 'dot' } | CellElement | HorizontalLineElement | VerticalLineElement
 
 type Grid = GridElement[][]
+
+type Positioned<T> = T & { row: number; col: number }
 
 export class SlitherlinkGame {
 	grid: Grid
@@ -18,15 +22,14 @@ export class SlitherlinkGame {
 		this.grid = $state(this.createInitialGrid(this.#width, this.#height))
 	}
 
-	#getElement = (row: number, col: number): GridElement => {
+	#getElement = (row: number, col: number): Positioned<GridElement> => {
 		const rowOutOfBounds = row < 0 || row >= this.grid.length
 		const colOutOfBounds = col < 0 || col >= this.grid[0].length
 
 		if (rowOutOfBounds || colOutOfBounds) {
 			throw new Error(`Invalid grid position: ${row}, ${col}`)
 		}
-
-		return this.grid[row][col]
+		return Object.assign(this.grid[row][col], { row, col })
 	}
 
 	createInitialGrid(width: number, height: number): Grid {
@@ -69,7 +72,27 @@ export class SlitherlinkGame {
 			element.state = 'unknown'
 		}
 
-		this.updateCellCounts()
+		this.#updateAdjacentCellCounts(element)
+	}
+
+	#getAdjacentCells = (element: Positioned<LineElement>): Positioned<CellElement>[] => {
+		const cells: Positioned<CellElement>[] = []
+
+		if (element.type === 'hline') {
+			// Horizontal line connects cells above and below
+			if (element.row > 0)
+				cells.push(this.#getElement(element.row - 1, element.col) as Positioned<CellElement>) // Cell above
+			if (element.row < this.grid.length - 1)
+				cells.push(this.#getElement(element.row + 1, element.col) as Positioned<CellElement>) // Cell below
+		} else {
+			// Vertical line connects cells left and right
+			if (element.col > 0)
+				cells.push(this.#getElement(element.row, element.col - 1) as Positioned<CellElement>) // Cell left
+			if (element.col < this.grid[0].length - 1)
+				cells.push(this.#getElement(element.row, element.col + 1) as Positioned<CellElement>) // Cell right
+		}
+
+		return cells
 	}
 
 	getAdjacentLineCount(row: number, col: number): number {
@@ -88,6 +111,15 @@ export class SlitherlinkGame {
 		if (right.type === 'vline' && right.state === 'include') count++
 
 		return count
+	}
+
+	#updateAdjacentCellCounts = (element: Positioned<LineElement>) => {
+		const adjacentCells = this.#getAdjacentCells(element)
+		for (const cell of adjacentCells) {
+			if (cell.type === 'cell') {
+				cell.current = this.getAdjacentLineCount(cell.row, cell.col)
+			}
+		}
 	}
 
 	updateCellCounts() {
@@ -279,8 +311,8 @@ export class SlitherlinkGame {
 						element.state === 'unknown'
 					) {
 						// Check if this line must be included or excluded based on cell constraints
-						const mustInclude = this.mustIncludeLine(row, col, element.type)
-						const mustExclude = this.mustExcludeLine(row, col, element.type)
+						const mustInclude = this.#mustIncludeLine(element)
+						const mustExclude = this.#mustExcludeLine(element)
 
 						if (mustInclude && !mustExclude) {
 							element.state = 'include'
@@ -303,13 +335,12 @@ export class SlitherlinkGame {
 		return isSolved
 	}
 
-	private mustIncludeLine(row: number, col: number, type: 'hline' | 'vline'): boolean {
+	#mustIncludeLine = (element: Positioned<LineElement>): boolean => {
 		// Check if any adjacent cell requires this line to be present
-		const adjacentCells = this.getAdjacentCells(row, col, type)
-		for (const [cellRow, cellCol] of adjacentCells) {
-			const cell = this.#getElement(cellRow, cellCol)
+		const adjacentCells = this.#getAdjacentCells(element)
+		for (const cell of adjacentCells) {
 			if (cell.type === 'cell' && cell.actual !== null) {
-				const currentCount = this.getAdjacentLineCount(cellRow, cellCol)
+				const currentCount = this.getAdjacentLineCount(cell.row, cell.col)
 				if (currentCount < cell.actual) {
 					// This cell still needs more lines
 					return true
@@ -319,13 +350,12 @@ export class SlitherlinkGame {
 		return false
 	}
 
-	private mustExcludeLine(row: number, col: number, type: 'hline' | 'vline'): boolean {
+	#mustExcludeLine = (element: Positioned<LineElement>): boolean => {
 		// Check if any adjacent cell would exceed its limit if this line is included
-		const adjacentCells = this.getAdjacentCells(row, col, type)
-		for (const [cellRow, cellCol] of adjacentCells) {
-			const cell = this.#getElement(cellRow, cellCol)
+		const adjacentCells = this.#getAdjacentCells(element)
+		for (const cell of adjacentCells) {
 			if (cell.type === 'cell' && cell.actual !== null) {
-				const currentCount = this.getAdjacentLineCount(cellRow, cellCol)
+				const currentCount = this.getAdjacentLineCount(cell.row, cell.col)
 				if (currentCount >= cell.actual) {
 					// This cell already has enough lines
 					return true
@@ -333,22 +363,6 @@ export class SlitherlinkGame {
 			}
 		}
 		return false
-	}
-
-	private getAdjacentCells(row: number, col: number, type: 'hline' | 'vline'): [number, number][] {
-		const cells: [number, number][] = []
-
-		if (type === 'hline') {
-			// Horizontal line connects cells above and below
-			if (row > 0) cells.push([row - 1, col]) // Cell above
-			if (row < 6) cells.push([row + 1, col]) // Cell below
-		} else {
-			// Vertical line connects cells left and right
-			if (col > 0) cells.push([row, col - 1]) // Cell left
-			if (col < 6) cells.push([row, col + 1]) // Cell right
-		}
-
-		return cells
 	}
 
 	enhancedCheckSolution() {
