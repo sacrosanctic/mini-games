@@ -38,4 +38,14 @@ export default defineConfig(
 			},
 		},
 	},
+	{
+		rules: {
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+				},
+			],
+		},
+	},
 )
