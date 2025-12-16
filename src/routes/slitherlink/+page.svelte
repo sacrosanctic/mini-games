@@ -278,10 +278,10 @@
 									element.state === 'gray' && 'bg-gray-400',
 									element.state === 'none' && 'hover:bg-gray-300',
 								]}
-								onclick={() => toggleLine(rowIndex, colIndex, 'hline')}
+								onclick={() => toggleLine(rowIndex, colIndex, element.type)}
 								onkeydown={(e) => {
 									if (e.key === 'Enter' || e.key === ' ') {
-										toggleLine(rowIndex, colIndex, 'hline')
+										toggleLine(rowIndex, colIndex, element.type)
 										e.preventDefault()
 									}
 								}}
@@ -296,10 +296,10 @@
 									element.state === 'gray' && 'bg-gray-400',
 									element.state === 'none' && 'hover:bg-gray-300',
 								]}
-								onclick={() => toggleLine(rowIndex, colIndex, 'vline')}
+								onclick={() => toggleLine(rowIndex, colIndex, element.type)}
 								onkeydown={(e) => {
 									if (e.key === 'Enter' || e.key === ' ') {
-										toggleLine(rowIndex, colIndex, 'vline')
+										toggleLine(rowIndex, colIndex, element.type)
 										e.preventDefault()
 									}
 								}}
