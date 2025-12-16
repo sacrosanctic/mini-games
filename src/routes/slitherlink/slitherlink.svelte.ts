@@ -17,8 +17,8 @@ export class SlitherlinkGame {
 	status = $state('Grid loaded - ready to add line drawing functionality')
 
 	constructor(options: { width?: number; height?: number } = {}) {
-		this.#width = options.width ?? 3
-		this.#height = options.height ?? 3
+		this.#width = options.width ?? 12
+		this.#height = options.height ?? 12
 
 		this.#grid = this.generator()
 		this.#gridcache = $state.snapshot(this.#grid)
@@ -179,7 +179,9 @@ export class SlitherlinkGame {
 	}
 
 	generator(): Grid {
-		const grid = this.convertPuzzleToGrid(generateSlitherlinkPuzzle(this.#width, this.#height))
+		const puzzle = generateSlitherlinkPuzzle(this.#width, this.#height)
+		console.log(puzzle)
+		const grid = this.convertPuzzleToGrid(puzzle)
 		return grid
 	}
 
