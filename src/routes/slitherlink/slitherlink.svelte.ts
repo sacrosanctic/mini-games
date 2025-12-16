@@ -10,17 +10,19 @@ type GridElement = { type: 'dot' } | CellElement | HorizontalLineElement | Verti
 type Grid = GridElement[][]
 
 export class SlitherlinkGame {
-	#grid: Grid = $state([])
-	#cache: Grid = []
+	#grid: Grid
 	#width: number
 	#height: number
+	#gridcache: Grid
 	status = $state('Grid loaded - ready to add line drawing functionality')
 
 	constructor(options: { width?: number; height?: number } = {}) {
-		this.#width = options.width ?? 12
-		this.#height = options.height ?? 12
+		this.#width = options.width ?? 3
+		this.#height = options.height ?? 3
 
-		this.generator()
+		this.#grid = this.generator()
+		this.#gridcache = $state.snapshot(this.#grid)
+		this.status = 'New puzzle generated!'
 	}
 
 	get grid() {
@@ -176,13 +178,13 @@ export class SlitherlinkGame {
 		return true
 	}
 
-	generator() {
-		this.#grid = this.convertPuzzleToGrid(generateSlitherlinkPuzzle(this.#width, this.#height))
-		this.#cache = $state.snapshot(this.#grid)
+	generator(): Grid {
+		const grid = this.convertPuzzleToGrid(generateSlitherlinkPuzzle(this.#width, this.#height))
+		return grid
 	}
 
 	reset() {
-		this.#grid = this.#cache
+		this.#grid = this.#gridcache
 	}
 
 	get width(): number {
