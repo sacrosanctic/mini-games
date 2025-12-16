@@ -3,80 +3,80 @@
 
 	type GridElement =
 		| { type: 'dot' }
-		| { type: 'cell'; number: number | null }
-		| { type: 'hline'; state: 'none' | 'gray' | 'black' }
-		| { type: 'vline'; state: 'none' | 'gray' | 'black' }
+		| { type: 'cell'; actual: number | null; current: number }
+		| { type: 'hline'; state: 'unknown' | 'include' | 'exclude' }
+		| { type: 'vline'; state: 'unknown' | 'include' | 'exclude' }
 
 	// 7x7 unified grid for 3x3 Slitherlink
 	let grid = $state<GridElement[][]>([
 		// Row 0: dots and horizontal lines
 		[
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
 		],
 		// Row 1: vertical lines and cells
 		[
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: 1 },
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: null },
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: 2 },
-			{ type: 'vline', state: 'none' },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: 1, current: 0 },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: null, current: 0 },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: 2, current: 0 },
+			{ type: 'vline', state: 'unknown' },
 		],
 		// Row 2: dots and horizontal lines
 		[
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
 		],
 		// Row 3: vertical lines and cells
 		[
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: null },
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: 3 },
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: null },
-			{ type: 'vline', state: 'none' },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: null, current: 0 },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: 3, current: 0 },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: null, current: 0 },
+			{ type: 'vline', state: 'unknown' },
 		],
 		// Row 4: dots and horizontal lines
 		[
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
 		],
 		// Row 5: vertical lines and cells
 		[
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: 2 },
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: null },
-			{ type: 'vline', state: 'none' },
-			{ type: 'cell', number: 1 },
-			{ type: 'vline', state: 'none' },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: 2, current: 0 },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: null, current: 0 },
+			{ type: 'vline', state: 'unknown' },
+			{ type: 'cell', actual: 1, current: 0 },
+			{ type: 'vline', state: 'unknown' },
 		],
 		// Row 6: dots and horizontal lines
 		[
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
-			{ type: 'hline', state: 'none' },
+			{ type: 'hline', state: 'unknown' },
 			{ type: 'dot' },
 		],
 	])
@@ -87,7 +87,51 @@
 		const element = grid[row][col]
 		if (element.type === type) {
 			element.state =
-				element.state === 'none' ? 'gray' : element.state === 'gray' ? 'black' : 'none'
+				element.state === 'unknown'
+					? 'include'
+					: element.state === 'include'
+						? 'exclude'
+						: 'unknown'
+			updateCellCounts()
+		}
+	}
+
+	function getAdjacentLineCount(row: number, col: number): number {
+		let count = 0
+		// Check all four sides
+		const top = grid[row - 1][col]
+		if (top.type === 'hline' && top.state === 'exclude') count++
+
+		const bottom = grid[row + 1][col]
+		if (bottom.type === 'hline' && bottom.state === 'exclude') count++
+
+		const left = grid[row][col - 1]
+		if (left.type === 'vline' && left.state === 'exclude') count++
+
+		const right = grid[row][col + 1]
+		if (right.type === 'vline' && right.state === 'exclude') count++
+
+		return count
+	}
+
+	function updateCellCounts() {
+		const cellPositions = [
+			[1, 1],
+			[1, 3],
+			[1, 5],
+			[3, 1],
+			[3, 3],
+			[3, 5],
+			[5, 1],
+			[5, 3],
+			[5, 5],
+		]
+
+		for (const [row, col] of cellPositions) {
+			const cell = grid[row][col]
+			if (cell.type === 'cell') {
+				cell.current = getAdjacentLineCount(row, col)
+			}
 		}
 	}
 
@@ -107,24 +151,9 @@
 
 		for (const [row, col] of cellPositions) {
 			const cell = grid[row][col]
-			if (cell.type !== 'cell' || cell.number === null) continue
+			if (cell.type !== 'cell' || cell.actual === null) continue
 
-			let adjacentLines = 0
-
-			// Check all four sides
-			const top = grid[row - 1][col]
-			if (top.type === 'hline' && top.state === 'black') adjacentLines++
-
-			const bottom = grid[row + 1][col]
-			if (bottom.type === 'hline' && bottom.state === 'black') adjacentLines++
-
-			const left = grid[row][col - 1]
-			if (left.type === 'vline' && left.state === 'black') adjacentLines++
-
-			const right = grid[row][col + 1]
-			if (right.type === 'vline' && right.state === 'black') adjacentLines++
-
-			if (adjacentLines !== cell.number) return false
+			if (cell.current !== cell.actual) return false
 		}
 		return true
 	}
@@ -147,7 +176,7 @@
 			for (let gridCol = 0; gridCol < 7; gridCol++) {
 				const element = grid[gridRow][gridCol]
 
-				if (element.type === 'hline' && element.state === 'black') {
+				if (element.type === 'hline' && element.state === 'exclude') {
 					// Connects dots to the left and right
 					const dotRow = gridToDot(gridRow)
 					const leftDotCol = gridToDot(gridCol - 1)
@@ -157,7 +186,7 @@
 					dots[dotRow][rightDotCol].push([dotRow, leftDotCol, 'h'])
 				}
 
-				if (element.type === 'vline' && element.state === 'black') {
+				if (element.type === 'vline' && element.state === 'exclude') {
 					// Connects dots above and below
 					const dotCol = gridToDot(gridCol)
 					const topDotRow = gridToDot(gridRow - 1)
@@ -239,7 +268,9 @@
 			for (let col = 0; col < 7; col++) {
 				const element = grid[row][col]
 				if (element.type === 'hline' || element.type === 'vline') {
-					element.state = 'none'
+					element.state = 'unknown'
+				} else if (element.type === 'cell') {
+					element.current = 0
 				}
 			}
 		}
@@ -265,18 +296,27 @@
 						{#if element.type === 'dot'}
 							<div class="h-2 w-2 rounded-full bg-gray-800 dark:bg-gray-200"></div>
 						{:else if element.type === 'cell'}
-							{#if element.number !== null}
-								<span class="text-lg font-bold text-blue-600 dark:text-blue-400">
-									{element.number}
+							{#if element.actual !== null}
+								<span
+									class={[
+										'text-lg font-bold',
+										element.current === element.actual
+											? 'text-gray-600 dark:text-gray-400'
+											: element.current > element.actual
+												? 'text-red-600 dark:text-red-400'
+												: 'text-blue-600 dark:text-blue-400',
+									]}
+								>
+									{element.actual}
 								</span>
 							{/if}
 						{:else if element.type === 'hline'}
 							<div
 								class={[
 									'h-2 w-full cursor-pointer',
-									element.state === 'black' && 'bg-black',
-									element.state === 'gray' && 'bg-gray-400',
-									element.state === 'none' && 'hover:bg-gray-300',
+									element.state === 'exclude' && 'bg-black',
+									element.state === 'include' && 'bg-gray-400',
+									element.state === 'unknown' && 'hover:bg-gray-300',
 								]}
 								onclick={() => toggleLine(rowIndex, colIndex, element.type)}
 								onkeydown={(e) => {
@@ -292,9 +332,9 @@
 							<div
 								class={[
 									'h-full w-2 cursor-pointer',
-									element.state === 'black' && 'bg-black',
-									element.state === 'gray' && 'bg-gray-400',
-									element.state === 'none' && 'hover:bg-gray-300',
+									element.state === 'exclude' && 'bg-black',
+									element.state === 'include' && 'bg-gray-400',
+									element.state === 'unknown' && 'hover:bg-gray-300',
 								]}
 								onclick={() => toggleLine(rowIndex, colIndex, element.type)}
 								onkeydown={(e) => {
