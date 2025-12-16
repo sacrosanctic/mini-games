@@ -4,26 +4,12 @@
 
 	const game = new SlitherlinkGame()
 
-	function getGridTemplate(width: number, height: number): string {
-		// For a grid of width x height, we need:
-		// - (2 * width + 1) columns: alternating dots and lines/cells
-		// - (2 * height + 1) rows: same pattern
-		// Pattern: 1fr (dot) 2fr (line/cell) 1fr (dot) 2fr (line/cell) ... 1fr (dot)
-
-		const totalCols = 2 * width + 1
-		const totalRows = 2 * height + 1
-
-		// Create column template: 1fr 2fr 1fr 2fr ... 1fr
-		const columns = Array.from({ length: totalCols }, (_, i) =>
-			i % 2 === 0 ? '16px' : '32px',
-		).join(' ')
-
-		// Create row template: same pattern
-		const rows = Array.from({ length: totalRows }, (_, i) => (i % 2 === 0 ? '16px' : '32px')).join(
-			' ',
-		)
-
-		return `grid-template-columns: ${columns}; grid-template-rows: ${rows};`
+	function getGridTemplate(dimension: number): string {
+		// For a dimension N, create pattern: 16px 32px 16px 32px ... 16px
+		const length = 2 * dimension + 1
+		return Array.from({ length })
+			.map((_, i) => (i % 2 === 0 ? '16px' : '48px'))
+			.join(' ')
 	}
 </script>
 
@@ -35,12 +21,16 @@
 
 	<!-- Slitherlink Grid -->
 	<div class="inline-block border-2 border-gray-600 bg-white p-4 dark:bg-gray-800">
-		<div class="grid gap-0" style={getGridTemplate(game.width, game.height)}>
+		<div
+			class="grid gap-0"
+			style:grid-template-columns={getGridTemplate(game.width)}
+			style:grid-template-rows={getGridTemplate(game.height)}
+		>
 			{#each game.grid as row, rowIndex (rowIndex)}
 				{#each row as element, colIndex (colIndex)}
 					<div class="flex items-center justify-center" data-type={element.type}>
 						{#if element.type === 'dot'}
-							<div class="h-2 w-2 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+							<div class="size-2 rounded-full bg-gray-800 dark:bg-gray-200"></div>
 						{:else if element.type === 'cell'}
 							{#if element.actual !== null}
 								<span
