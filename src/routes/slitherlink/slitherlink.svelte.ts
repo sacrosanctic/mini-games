@@ -1,4 +1,4 @@
-import { generateSlitherlinkPuzzle, type SimpleSlitherlinkPuzzle } from './generator'
+import { generateSlitherlinkPuzzle } from './generator'
 
 type HorizontalLineElement = { type: 'hline'; state: 'unknown' | 'include' | 'exclude' }
 type VerticalLineElement = { type: 'vline'; state: 'unknown' | 'include' | 'exclude' }
@@ -37,7 +37,7 @@ export class SlitherlinkGame {
 		return Object.assign(this.#grid[row][col], { row, col })
 	}
 
-	convertPuzzleToGrid(puzzle: SimpleSlitherlinkPuzzle): Grid {
+	convertPuzzleToGrid(puzzle: ReturnType<typeof generateSlitherlinkPuzzle>): Grid {
 		const grid: Grid = []
 
 		for (let row = 0; row < 2 * puzzle.height + 1; row++) {
@@ -153,7 +153,27 @@ export class SlitherlinkGame {
 	}
 
 	checker(): boolean {
-		return false // TODO: implement solution checking
+		if (!this.#checkCellNumbers()) {
+			this.status = 'Incorrect: Some cells have wrong number of lines'
+			return false
+		}
+
+		this.status = 'Correct! Puzzle solved!'
+		return true
+	}
+
+	#checkCellNumbers(): boolean {
+		for (let row = 0; row < this.grid.length; row++) {
+			for (let col = 0; col < this.grid[0].length; col++) {
+				const element = this.#getElement(row, col)
+				if (element.type === 'cell' && element.actual !== null) {
+					if (element.current !== element.actual) {
+						return false
+					}
+				}
+			}
+		}
+		return true
 	}
 
 	generator() {
