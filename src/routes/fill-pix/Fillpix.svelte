@@ -1,8 +1,10 @@
 <script lang="ts">
 	import Cell from './Cell.svelte'
 	import { FillPixGame } from './fillpix.svelte.ts'
+	import { generateFillPixPuzzle } from './generator'
 
-	const game = new FillPixGame(5, 5)
+	const puzzle = generateFillPixPuzzle(10, 10)
+	const game = new FillPixGame(puzzle)
 	game
 
 	class DragHandler {

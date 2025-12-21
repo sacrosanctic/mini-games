@@ -6,10 +6,10 @@ export class FillPixGame {
 	#width: number
 	#height: number
 
-	constructor(width: number, height: number, map?: boolean[][]) {
-		this.#width = width
-		this.#height = height
-		this.#grid = this.#createCells(map)
+	constructor(options: { width: number; height: number; map?: boolean[][] }) {
+		this.#width = options.width
+		this.#height = options.height
+		this.#grid = this.#createCells(options.map)
 	}
 	get width() {
 		return this.#width
