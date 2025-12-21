@@ -15,9 +15,10 @@ const preview: Preview = {
 			list: [
 				{ name: 'system', class: '', color: '#ffffff' },
 				{ name: 'light', class: '', color: '#ffffff' },
-				{ name: 'dark', class: 'dark', color: '#000000' },
+				{ name: 'dark', class: 'dark bg-neutral-900', color: '#000000' },
 			],
 		},
+		backgrounds: { disable: true },
 	},
 }
 
@@ -26,7 +27,7 @@ export const decorators = [
 		themes: {
 			system: '',
 			light: '',
-			dark: 'dark',
+			dark: 'dark bg-neutral-900',
 		},
 		defaultTheme: 'system',
 		parentSelector: 'html',
