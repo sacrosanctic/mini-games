@@ -6,8 +6,21 @@
 </script>
 
 <div class="flex h-screen flex-col items-center dark:bg-gray-900">
-	<h1 class="my-4 text-2xl font-bold dark:text-white">Fill-Pix Puzzle</h1>
+	<h1 class="my-4 hidden text-2xl font-bold sm:block dark:text-white">Fill-Pix Puzzle</h1>
 	<div class="mb-4 flex gap-2">
+		<button
+			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+			onclick={() => game.toggleAutoFillMode()}
+		>
+			undo
+		</button>
+		<button
+			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+			onclick={() => game.toggleAutoFillMode()}
+		>
+			redo
+		</button>
+
 		<button
 			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
 			onclick={() => game.toggleAutoFillMode()}
@@ -23,7 +36,7 @@
 	</div>
 	<div class="scrollable-grid w-full flex-1 overflow-auto">
 		<div
-			class="grid select-none"
+			class="grid justify-center select-none"
 			style:grid-template-columns="repeat({game.width}, calc(var(--spacing) * 10))"
 			style:min-width="{game.width * 40}px"
 			style:min-height="{game.height * 40}px"
