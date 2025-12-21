@@ -5,24 +5,32 @@
 	const game = new FillPixGame(10, 10)
 </script>
 
-<div class="flex h-screen flex-col items-center dark:bg-gray-900">
+<div class="flex h-screen flex-col-reverse items-center sm:flex-col dark:bg-gray-900">
 	<h1 class="my-4 hidden text-2xl font-bold sm:block dark:text-white">Fill-Pix Puzzle</h1>
-	<div class="mb-4 flex gap-4 text-white">
-		<button class=" flex" onclick={() => game.toggleAutoFillMode()} aria-label="undo">
+	<div class="mb-4 flex gap-8 text-white sm:gap-4">
+		<button class="flex cursor-pointer items-center gap-1" aria-label="undo">
 			<span class="icon-[mdi--undo] size-8"></span>
 			<span class="hidden sm:inline">undo</span>
 		</button>
-		<button class="" onclick={() => game.toggleAutoFillMode()} aria-label="redo">
+		<button class="flex cursor-pointer items-center gap-1" aria-label="redo">
 			<span class="icon-[mdi--redo] size-8"></span>
 			<span class="hidden sm:inline">redo</span>
 		</button>
 
-		<button class="" onclick={() => game.toggleAutoFillMode()} aria-label="grid">
+		<button
+			class={[
+				'flex cursor-pointer items-center gap-1 dark:text-gray-400',
+				game.autoFillMode && 'rounded-xs outline-1 outline-offset-4 outline-white dark:text-white',
+			]}
+			onclick={() => game.toggleAutoFillMode()}
+			aria-label="grid"
+			data-active={game.autoFillMode}
+		>
 			<span class="icon-[mdi--grid] size-8"></span>
 			<span class="hidden sm:inline">grid</span>
 		</button>
 		<button
-			class=""
+			class="flex cursor-pointer items-center gap-1"
 			onclick={(e) => (e.currentTarget.innerText = String(game.check()))}
 			aria-label="check"
 		>
@@ -30,7 +38,13 @@
 			<span class="hidden sm:inline">check</span>
 		</button>
 	</div>
-	<div class="scrollable-grid w-full flex-1 overflow-auto">
+	<div
+		class={[
+			'scrollable-grid w-full flex-1  overflow-auto ',
+			'grid place-items-center',
+			'sm:block sm:[place-items:normal]',
+		]}
+	>
 		<div
 			class="grid justify-center select-none"
 			style:grid-template-columns="repeat({game.width}, calc(var(--spacing) * 10))"
