@@ -2,18 +2,21 @@
 	export class Entity {
 		#row: number
 		#col: number
-		#value: number
+		#hint: number
+		#totalCells: number
 		#state: 'unmarked' | 'marked' | 'blocked'
 
 		constructor(options: {
 			row: number
 			col: number
-			value?: number
+			hint: number
+			totalCells?: number
 			state?: 'unmarked' | 'marked' | 'blocked'
 		}) {
 			this.#row = options.row
 			this.#col = options.col
-			this.#value = options.value ?? 0
+			this.#hint = options.hint ?? 0
+			this.#totalCells = options.totalCells ?? 9
 			this.#state = $state(options.state ?? 'unmarked')
 		}
 
@@ -23,8 +26,11 @@
 		get col() {
 			return this.#col
 		}
-		get value() {
-			return this.#value
+		get hint() {
+			return this.#hint
+		}
+		get totalCells() {
+			return this.#totalCells
 		}
 		get state() {
 			return this.#state
@@ -67,12 +73,12 @@
 		'relative flex size-10 cursor-pointer items-center justify-center border  text-2xl',
 		'border-gray-300 bg-white dark:border-gray-500 dark:bg-gray-800 dark:text-white',
 		cell.state === 'marked' && 'bg-black text-white dark:bg-gray-600 ',
-		filledCount === 9 && 'text-gray-300 dark:text-gray-500',
+		filledCount >= cell.totalCells && 'text-gray-300 dark:text-gray-500',
 	)}
 	onmousedown={() => onMouseDown?.(cell)}
 	onmouseenter={() => onMouseEnter?.(cell)}
 >
-	{cell.value > 0 ? cell.value : ''}
+	{cell.hint || ''}
 	{#if cell.state === 'blocked'}
 		<svg class="absolute inset-0 size-full">
 			<line

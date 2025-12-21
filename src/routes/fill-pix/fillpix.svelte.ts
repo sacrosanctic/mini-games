@@ -23,11 +23,12 @@ class Grid {
 			cells[r] = []
 			for (let c = 0; c < this.#width; c++) {
 				// For now, random clues; replace with proper generator
-				const value = Math.random() < 0.3 ? Math.floor(Math.random() * 9) + 1 : 0
+				const hint = Math.random() < 0.3 ? Math.floor(Math.random() * 9) + 1 : 0
 				cells[r][c] = new Cell.Entity({
 					row: r,
 					col: c,
-					value,
+					hint,
+					totalCells,
 				})
 			}
 		}
