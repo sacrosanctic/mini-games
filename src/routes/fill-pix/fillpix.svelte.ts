@@ -81,7 +81,7 @@ export class FillPixGame {
 		this.#autoFillMode = !this.#autoFillMode
 	}
 
-	clickCell(cell: Cell.Entity) {
+	handleCellClick(cell: Cell.Entity) {
 		const fn = this.#autoFillMode ? this.autoFill : this.toggleCell
 		fn(cell)
 	}

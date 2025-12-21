@@ -42,7 +42,11 @@
 	<div class="grid select-none" style:grid-template-columns="repeat({game.width}, minmax(0, 1fr))">
 		{#each game.grid as row (row)}
 			{#each row as cell (cell)}
-				<Cell {cell} filledCount={game.getFilled(cell)} onclick={() => game.clickCell(cell)} />
+				<Cell
+					{cell}
+					filledCount={game.getFilled(cell)}
+					onclick={() => game.handleCellClick(cell)}
+				/>
 			{/each}
 		{/each}
 	</div>
