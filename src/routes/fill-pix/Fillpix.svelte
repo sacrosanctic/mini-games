@@ -15,7 +15,7 @@
 						cell.state === 'unmarked' && 'bg-white dark:bg-gray-800',
 						cell.state === 'marked' && 'bg-black text-white dark:bg-gray-700 dark:text-black',
 						cell.state === 'blocked' && 'bg-gray-200  dark:bg-gray-700 ',
-						cell.markedNeighbours >= cell.value && 'text-gray-300 dark:text-gray-500',
+						cell.markedCount >= cell.value && 'text-gray-300 dark:text-gray-500',
 					]}
 					onclick={() => cell.toggleState()}
 				>
