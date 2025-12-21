@@ -17,4 +17,8 @@
 	})
 </script>
 
-<Story name="Unmarked" args={{ cell: new Cell({ row: 0, col: 0, value: 1, grid: game.grid }) }} />
+<Story
+	name="Unmarked"
+	args={{ cell: new Cell({ row: 0, col: 0, value: 1, grid: game.grid }) }}
+	globals={{ theme: 'dark' }}
+/>

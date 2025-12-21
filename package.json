@@ -26,6 +26,7 @@
 		"@storybook/addon-a11y": "^10.1.10",
 		"@storybook/addon-docs": "^10.1.10",
 		"@storybook/addon-svelte-csf": "^5.0.10",
+		"@storybook/addon-themes": "^10.1.10",
 		"@storybook/addon-vitest": "^10.1.10",
 		"@storybook/sveltekit": "^10.1.10",
 		"@sveltejs/adapter-vercel": "^6.2.0",
