@@ -2,7 +2,7 @@
 	import Cell from './Cell.svelte'
 	import { FillPixGame } from './fillpix.svelte.ts'
 
-	const game = new FillPixGame(100, 100)
+	const game = new FillPixGame(10, 10)
 </script>
 
 <div class="flex h-screen flex-col items-center dark:bg-gray-900">
