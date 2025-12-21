@@ -5,17 +5,24 @@ export class FillPixGame {
 	#grid: Cell.Entity[][]
 	#width: number
 	#height: number
+	#autoFillMode = $state(false)
 
 	constructor(options: { width: number; height: number; map?: boolean[][] }) {
 		this.#width = options.width
 		this.#height = options.height
 		this.#grid = this.#createCells(options.map)
 	}
+
 	get width() {
 		return this.#width
 	}
+
 	get grid() {
 		return this.#grid
+	}
+
+	get autoFillMode() {
+		return this.#autoFillMode
 	}
 
 	#createCells(map?: boolean[][]): Cell.Entity[][] {
@@ -50,5 +57,32 @@ export class FillPixGame {
 
 	getFilled(cell: Cell.Entity): number {
 		return this.#getLocalGrid(cell).filter((c) => c.state !== 'unmarked').length
+	}
+
+	toggleCell(cell: Cell.Entity) {
+		cell.toggleState()
+	}
+
+	autoFill(cell: Cell.Entity) {
+		const localCells = this.#getLocalGrid(cell)
+		const totalMarked = localCells.filter((c) => c.state === 'marked').length
+
+		if (cell.hint === totalMarked && totalMarked !== 0)
+			localCells.forEach((c) => {
+				if (c.state === 'unmarked') c.state = 'blocked'
+			})
+		else
+			localCells.forEach((c) => {
+				if (c.state === 'unmarked') c.state = 'marked'
+			})
+	}
+
+	toggleAutoFillMode() {
+		this.#autoFillMode = !this.#autoFillMode
+	}
+
+	clickCell(cell: Cell.Entity) {
+		const fn = this.#autoFillMode ? this.autoFill : this.toggleCell
+		fn(cell)
 	}
 }
