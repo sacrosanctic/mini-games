@@ -7,31 +7,27 @@
 
 <div class="flex h-screen flex-col items-center dark:bg-gray-900">
 	<h1 class="my-4 hidden text-2xl font-bold sm:block dark:text-white">Fill-Pix Puzzle</h1>
-	<div class="mb-4 flex gap-2">
-		<button
-			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-			onclick={() => game.toggleAutoFillMode()}
-		>
-			undo
+	<div class="mb-4 flex gap-4 text-white">
+		<button class=" flex" onclick={() => game.toggleAutoFillMode()} aria-label="undo">
+			<span class="icon-[mdi--undo] size-8"></span>
+			<span class="hidden sm:inline">undo</span>
 		</button>
-		<button
-			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-			onclick={() => game.toggleAutoFillMode()}
-		>
-			redo
+		<button class="" onclick={() => game.toggleAutoFillMode()} aria-label="redo">
+			<span class="icon-[mdi--redo] size-8"></span>
+			<span class="hidden sm:inline">redo</span>
 		</button>
 
-		<button
-			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-			onclick={() => game.toggleAutoFillMode()}
-		>
-			3x3 mode: {game.autoFillMode}
+		<button class="" onclick={() => game.toggleAutoFillMode()} aria-label="grid">
+			<span class="icon-[mdi--grid] size-8"></span>
+			<span class="hidden sm:inline">grid</span>
 		</button>
 		<button
-			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+			class=""
 			onclick={(e) => (e.currentTarget.innerText = String(game.check()))}
+			aria-label="check"
 		>
-			check answer
+			<span class="icon-[mdi--check] size-8"></span>
+			<span class="hidden sm:inline">check</span>
 		</button>
 	</div>
 	<div class="scrollable-grid w-full flex-1 overflow-auto">
