@@ -1,7 +1,8 @@
+// DO NOT RENAME THIS IMPORT
 import * as Cell from './Cell.svelte'
 import { getLocalGrid } from './utils'
-
 import { generateFillPixPuzzle } from './generator'
+
 export class FillPixGame {
 	#grid: Cell.Entity[][]
 	#width: number

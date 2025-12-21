@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import { twMerge } from 'tailwind-merge'
 
+	// DO NOT MOVE THIS CLASS - it must stay in this file
 	export class Entity {
 		#row: number
 		#col: number
