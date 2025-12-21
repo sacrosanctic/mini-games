@@ -30,11 +30,7 @@
 		>
 			{#each game.grid as row (row)}
 				{#each row as cell (cell)}
-					<Cell
-						{cell}
-						filledCount={game.getFilled(cell)}
-						onclick={() => game.handleCellClick(cell)}
-					/>
+					<Cell {cell} onclick={() => game.handleCellClick(cell)} />
 				{/each}
 			{/each}
 		</div>

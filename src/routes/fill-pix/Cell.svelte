@@ -3,41 +3,52 @@
 
 	// DO NOT MOVE THIS CLASS - it must stay in this file
 	export class Entity {
-		#row: number
-		#col: number
-		#hint: number
-		#totalCells: number
+		#x: number
+		#y: number
 		#state: 'unmarked' | 'marked' | 'blocked'
+		#shouldFill: boolean
+		#hint: number
+		localCells: Entity[]
+		#filledCount: number
 
 		constructor(options: {
-			row: number
-			col: number
-			hint: number
-			totalCells?: number
+			x: number
+			y: number
 			state?: 'unmarked' | 'marked' | 'blocked'
+			shouldFill: boolean
+			getLocalCells?: () => Entity[]
 		}) {
-			this.#row = options.row
-			this.#col = options.col
-			this.#hint = options.hint ?? 0
-			this.#totalCells = options.totalCells ?? 9
+			this.#y = options.y
+			this.#x = options.x
 			this.#state = $state(options.state ?? 'unmarked')
+			this.#shouldFill = options.shouldFill
+
+			this.localCells = $derived(options.getLocalCells?.() ?? [this])
+			this.#hint = $derived(this.localCells.filter((cell) => cell.shouldFill).length)
+			this.#filledCount = $derived(
+				this.localCells.filter((cell) => cell.state !== 'unmarked').length,
+			)
 		}
 
-		get row() {
-			return this.#row
+		get x() {
+			return this.#x
 		}
-		get col() {
-			return this.#col
+		get y() {
+			return this.#y
 		}
 		get hint() {
 			return this.#hint
 		}
-		get totalCells() {
-			return this.#totalCells
-		}
 		get state() {
 			return this.#state
 		}
+		get shouldFill() {
+			return this.#shouldFill
+		}
+		get filledCount() {
+			return this.#filledCount
+		}
+
 		set state(val) {
 			// Update if we are resetting to 'unmarked' OR if the current state is 'unmarked'
 			if (val === 'unmarked' || this.#state === 'unmarked') {
@@ -60,11 +71,10 @@
 <script lang="ts">
 	interface Props {
 		cell: Entity
-		filledCount: number
 		onclick?: VoidFunction
 	}
 
-	let { cell, filledCount, onclick }: Props = $props()
+	let { cell, onclick }: Props = $props()
 </script>
 
 <button
@@ -72,7 +82,7 @@
 		'relative flex size-10 cursor-pointer items-center justify-center border  text-2xl',
 		'border-gray-300 bg-white dark:border-gray-500 dark:bg-gray-800 dark:text-white',
 		cell.state === 'marked' && 'bg-black text-white dark:bg-gray-600 ',
-		filledCount >= cell.totalCells && 'text-gray-300 dark:text-gray-500',
+		cell.filledCount >= cell.localCells.length && 'text-gray-300 dark:text-gray-500',
 	)}
 	{onclick}
 >
@@ -84,7 +94,7 @@
 				y1="10%"
 				x2="90%"
 				y2="90%"
-				class={['stroke-black dark:stroke-gray-400']}
+				class="stroke-black dark:stroke-gray-400"
 				stroke-width="1"
 			/>
 			<line
@@ -92,7 +102,7 @@
 				y1="10%"
 				x2="10%"
 				y2="90%"
-				class={['stroke-black dark:stroke-gray-400']}
+				class="stroke-black dark:stroke-gray-400"
 				stroke-width="1"
 			/>
 		</svg>

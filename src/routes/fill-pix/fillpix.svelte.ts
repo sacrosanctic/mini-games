@@ -4,7 +4,7 @@ import { getLocalGrid } from './utils'
 import { generateFillPixPuzzle } from './generator'
 
 export class FillPixGame {
-	#grid: Cell.Entity[][]
+	#grid: Cell.Entity[][] = $state([])
 	#width: number
 	#height: number
 	#autoFillMode = $state(false)
@@ -12,7 +12,8 @@ export class FillPixGame {
 	constructor(width: number, height: number) {
 		this.#width = width
 		this.#height = height
-		this.#grid = this.#createCells(generateFillPixPuzzle(width, height, 'random'))
+		const puzzle = generateFillPixPuzzle(width, height)
+		this.#grid = this.#createCells(puzzle.map)
 	}
 
 	get width() {
@@ -32,36 +33,21 @@ export class FillPixGame {
 	}
 
 	#createCells(map: boolean[][]): Cell.Entity[][] {
-		const cells: Cell.Entity[][] = []
-		for (let r = 0; r < this.#height; r++) {
-			cells[r] = []
-			for (let c = 0; c < this.#width; c++) {
-				const hint = getLocalGrid(map, r, c).filter((cell) => cell).length
-
-				const minR = Math.max(0, r - 1)
-				const maxR = Math.min(this.#height - 1, r + 1)
-				const minC = Math.max(0, c - 1)
-				const maxC = Math.min(this.#width - 1, c + 1)
-				const totalCells = (maxR - minR + 1) * (maxC - minC + 1)
-
-				cells[r][c] = new Cell.Entity({
-					row: r,
-					col: c,
-					hint,
-					totalCells,
-				})
-			}
-		}
-		return cells
+		return map.map((row, y) =>
+			row.map(
+				(shouldFill, x) =>
+					new Cell.Entity({
+						x,
+						y,
+						shouldFill,
+						getLocalCells: () => getLocalGrid(this.#grid, y, x),
+					}),
+			),
+		)
 	}
 
-	// Get 3x3 local grid including self
 	#getLocalGrid(cell: Cell.Entity): Cell.Entity[] {
-		return getLocalGrid(this.#grid, cell.row, cell.col)
-	}
-
-	getFilled(cell: Cell.Entity): number {
-		return this.#getLocalGrid(cell).filter((c) => c.state !== 'unmarked').length
+		return getLocalGrid(this.#grid, cell.y, cell.x)
 	}
 
 	toggleCell(cell: Cell.Entity) {
@@ -95,9 +81,7 @@ export class FillPixGame {
 		for (let r = 0; r < this.#height; r++) {
 			for (let c = 0; c < this.#width; c++) {
 				const cell = this.#grid[r][c]
-				const localCells = this.#getLocalGrid(cell)
-				const markedCount = localCells.filter((c) => c.state === 'marked').length
-				if (markedCount !== cell.hint) return false
+				if (cell.localCells.length !== cell.hint) return false
 				if (cell.state === 'unmarked') return false
 			}
 		}
