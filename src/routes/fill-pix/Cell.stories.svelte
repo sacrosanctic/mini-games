@@ -1,6 +1,6 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf'
-	import component from './CellGrid.svelte'
+	import component from './CellStory.svelte'
 
 	const { Story } = defineMeta({
 		title: 'FillPix/Cell',

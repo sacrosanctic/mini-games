@@ -62,7 +62,7 @@
 	interface Props {
 		cell: PublicInterface<Entity>
 		filledCount: number
-		onclick: VoidFunction
+		onclick?: VoidFunction
 	}
 
 	let { cell, filledCount, onclick }: Props = $props()
