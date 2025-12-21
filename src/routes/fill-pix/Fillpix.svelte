@@ -11,13 +11,16 @@
 			{#each row as cell, _c (cell.row + '-' + cell.col)}
 				<button
 					class={[
-						'flex size-10 cursor-pointer items-center justify-center border border-gray-300 bg-white text-sm dark:border-gray-600 dark:bg-gray-800',
-						cell.isFilled && 'bg-black text-white dark:bg-white dark:text-black',
+						'flex size-10 cursor-pointer items-center justify-center border border-gray-300 text-sm dark:border-gray-600',
+						cell.state === 'unmarked' && 'bg-white dark:bg-gray-800',
+						cell.state === 'marked' && 'bg-black text-white dark:bg-white dark:text-black',
+						cell.state === 'blocked' &&
+							'bg-gray-200 text-red-500 dark:bg-gray-700 dark:text-red-400',
 						cell.value > 0 && 'font-bold',
 					]}
-					onclick={() => cell.toggleFill()}
+					onclick={() => cell.toggleState()}
 				>
-					{cell.value > 0 ? cell.value : ''}
+					{cell.value > 0 ? cell.value : cell.state === 'blocked' ? 'X' : ''}
 				</button>
 			{/each}
 		{/each}
