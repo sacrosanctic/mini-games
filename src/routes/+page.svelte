@@ -17,6 +17,12 @@
 		>
 			Play Slitherlink
 		</a>
+		<a
+			href={resolve('/fill-pix')}
+			class="block rounded bg-purple-500 px-4 py-2 text-center text-white hover:bg-purple-600 dark:hover:bg-purple-800"
+		>
+			Play Fill-Pix
+		</a>
 		<!-- Add more game links here as needed -->
 	</div>
 </div>
