@@ -85,4 +85,17 @@ export class FillPixGame {
 		if (this.#autoFillMode) this.autoFill(cell)
 		else this.toggleCell(cell)
 	}
+
+	check(): boolean {
+		for (let r = 0; r < this.#height; r++) {
+			for (let c = 0; c < this.#width; c++) {
+				const cell = this.#grid[r][c]
+				const localCells = this.#getLocalGrid(cell)
+				const markedCount = localCells.filter((c) => c.state === 'marked').length
+				if (markedCount !== cell.hint) return false
+				if (cell.state === 'unmarked') return false
+			}
+		}
+		return true
+	}
 }

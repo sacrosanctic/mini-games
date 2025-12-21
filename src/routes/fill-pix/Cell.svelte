@@ -57,10 +57,8 @@
 </script>
 
 <script lang="ts">
-	type PublicInterface<T> = Pick<T, keyof T>
-
 	interface Props {
-		cell: PublicInterface<Entity>
+		cell: Entity
 		filledCount: number
 		onclick?: VoidFunction
 	}

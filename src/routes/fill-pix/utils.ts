@@ -14,3 +14,24 @@ export function getLocalGrid<T>(grid: T[][], x: number, y: number): T[] {
 	}
 	return cells
 }
+
+export class DragHandler {
+	isDragging = $state(false)
+	startState = $state('')
+
+	handleMouseDown(cell: { toggleState: () => void; state: string }) {
+		this.isDragging = true
+		cell.toggleState()
+		this.startState = cell.state
+	}
+
+	handleMouseEnter(cell: { toggleState: () => void; state: string }) {
+		if (this.isDragging) {
+			cell.state = this.startState
+		}
+	}
+
+	handleMouseUp() {
+		this.isDragging = false
+	}
+}
