@@ -13,8 +13,8 @@ const preview: Preview = {
 		// add the theme options to the toolbar
 		// the class and color prop doesnt seem to do anything in this setup, probably because i disabled backgrounds
 		themes: {
-			default: 'system',
-			list: [{ name: 'system' }, { name: 'light' }, { name: 'dark' }],
+			default: 'light',
+			list: [{ name: 'light' }, { name: 'dark' }],
 		},
 		// https://github.com/storybookjs/storybook/discussions/25183#discussioncomment-9646359
 		// disable as it conflicts with themes
@@ -26,11 +26,10 @@ const preview: Preview = {
 export const decorators = [
 	withThemeByClassName({
 		themes: {
-			system: '',
 			light: '',
 			dark: 'dark bg-neutral-900',
 		},
-		defaultTheme: 'system',
+		defaultTheme: 'light',
 		parentSelector: 'html',
 	}),
 ]
