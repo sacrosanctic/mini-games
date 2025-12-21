@@ -54,19 +54,20 @@ export class Cell {
 	#row: number
 	#col: number
 	#value: number // 0 for empty, number for clue
-	#state: 'unmarked' | 'marked' | 'blocked' = $state('unmarked')
+	#state: 'unmarked' | 'marked' | 'blocked'
 	#getMarkedCount: (cell: Cell) => number
 
 	constructor(options: {
 		row: number
 		col: number
 		value?: number
+		state?: 'unmarked' | 'marked' | 'blocked'
 		getMarkedCount?: (cell: Cell) => number
 	}) {
 		this.#row = options.row
 		this.#col = options.col
 		this.#value = options.value ?? 0
-		this.#state = 'unmarked'
+		this.#state = $state(options.state ?? 'unmarked')
 		this.#getMarkedCount = options.getMarkedCount ?? (() => 0)
 	}
 
