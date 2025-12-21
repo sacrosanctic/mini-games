@@ -79,7 +79,7 @@
 
 <button
 	class={twMerge(
-		'relative flex size-10 cursor-pointer items-center justify-center border  text-2xl',
+		'relative flex size-10 cursor-pointer items-center justify-center border  text-3xl',
 		'border-gray-300 bg-white dark:border-gray-500 dark:bg-gray-800 dark:text-white',
 		cell.state === 'marked' && 'bg-black text-white dark:bg-gray-600 ',
 		cell.filledCount >= cell.localCells.length && 'text-gray-300 dark:text-gray-500',
@@ -95,7 +95,7 @@
 				x2="90%"
 				y2="90%"
 				class="stroke-black dark:stroke-gray-400"
-				stroke-width="1"
+				stroke-width="3"
 			/>
 			<line
 				x1="90%"
@@ -103,7 +103,7 @@
 				x2="10%"
 				y2="90%"
 				class="stroke-black dark:stroke-gray-400"
-				stroke-width="1"
+				stroke-width="3"
 			/>
 		</svg>
 	{/if}
