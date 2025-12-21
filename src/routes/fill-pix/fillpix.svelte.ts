@@ -29,7 +29,7 @@ class Grid {
 	}
 
 	// Get 3x3 neighborhood including self
-	getNeighbors(cell: Cell): Cell[] {
+	getNeighbours(cell: Cell): Cell[] {
 		const neighbors: Cell[] = []
 		for (let dr = -1; dr <= 1; dr++) {
 			for (let dc = -1; dc <= 1; dc++) {
@@ -44,19 +44,26 @@ class Grid {
 	}
 }
 
-class Cell {
+export class Cell {
 	#row: number
 	#col: number
 	#value: number // 0 for empty, number for clue
-	#state: 'unmarked' | 'marked' | 'blocked'
+	#state: 'unmarked' | 'marked' | 'blocked' = $state('unmarked')
 	#grid: Grid
+	#markedNeighbours = $derived(
+		this.#getNeighbours().filter((cell) => cell.state === 'marked').length,
+	)
 
 	constructor(options: { row: number; col: number; value?: number; grid: Grid }) {
 		this.#row = options.row
 		this.#col = options.col
 		this.#value = options.value ?? 0
-		this.#state = $state('unmarked')
+		this.#state = 'unmarked'
 		this.#grid = options.grid
+	}
+
+	get markedNeighbours() {
+		return this.#markedNeighbours
 	}
 
 	get row() {
@@ -73,15 +80,19 @@ class Cell {
 	}
 
 	// Get 3x3 neighborhood including self
-	#getNeighbors(): Cell[] {
-		return this.#grid.getNeighbors(this)
+	#getNeighbours(): Cell[] {
+		return this.#grid.getNeighbours(this)
 	}
 
 	// Check if sum of filled cells in 3x3 equals target (for cells with clues)
 	check3x3Sum(): boolean {
 		if (this.#value === 0) return true // No clue to check
-		const filledCount = this.#getNeighbors().filter((cell) => cell.state === 'marked').length
+		const filledCount = this.#getNeighbours().filter((cell) => cell.state === 'marked').length
 		return filledCount === this.#value
+	}
+
+	getNeighbourFillCount(): number {
+		return this.#getNeighbours().filter((cell) => cell.state === 'marked').length
 	}
 
 	toggleState() {
