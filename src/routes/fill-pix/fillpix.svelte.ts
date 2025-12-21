@@ -48,14 +48,14 @@ class Cell {
 	#row: number
 	#col: number
 	#value: number // 0 for empty, number for clue
-	#isFilled: boolean
+	#state: 'unmarked' | 'marked' | 'blocked'
 	#grid: Grid
 
 	constructor(options: { row: number; col: number; value?: number; grid: Grid }) {
 		this.#row = options.row
 		this.#col = options.col
 		this.#value = options.value ?? 0
-		this.#isFilled = $state(false)
+		this.#state = $state('unmarked')
 		this.#grid = options.grid
 	}
 
@@ -68,11 +68,11 @@ class Cell {
 	get value() {
 		return this.#value
 	}
-	get isFilled() {
-		return this.#isFilled
+	get state() {
+		return this.#state
 	}
 
-	// Get 4 adjacent neighbors
+	// Get 3x3 neighborhood including self
 	#getNeighbors(): Cell[] {
 		return this.#grid.getNeighbors(this)
 	}
@@ -80,12 +80,18 @@ class Cell {
 	// Check if sum of filled cells in 3x3 equals target (for cells with clues)
 	check3x3Sum(): boolean {
 		if (this.#value === 0) return true // No clue to check
-		const filledCount = this.#getNeighbors().filter((cell) => cell.isFilled).length
+		const filledCount = this.#getNeighbors().filter((cell) => cell.state === 'marked').length
 		return filledCount === this.#value
 	}
 
-	toggleFill() {
-		this.#isFilled = !this.#isFilled
+	toggleState() {
+		if (this.#state === 'unmarked') {
+			this.#state = 'marked'
+		} else if (this.#state === 'marked') {
+			this.#state = 'blocked'
+		} else {
+			this.#state = 'unmarked'
+		}
 	}
 }
 
