@@ -22,14 +22,20 @@ class Grid {
 			for (let c = 0; c < this.#width; c++) {
 				// For now, random clues; replace with proper generator
 				const value = Math.random() < 0.3 ? Math.floor(Math.random() * 9) + 1 : 0
-				cells[r][c] = new Cell({ row: r, col: c, value, grid: this })
+				cells[r][c] = new Cell({
+					row: r,
+					col: c,
+					value,
+					getMarkedCount: (currentCell: Cell) =>
+						this.#getLocalGrid(currentCell).filter((cell) => cell.state === 'marked').length,
+				})
 			}
 		}
 		return cells
 	}
 
 	// Get 3x3 local grid including self
-	getLocalGrid(cell: Cell): Cell[] {
+	#getLocalGrid(cell: Cell): Cell[] {
 		const cells: Cell[] = []
 		for (let dr = -1; dr <= 1; dr++) {
 			for (let dc = -1; dc <= 1; dc++) {
@@ -49,19 +55,23 @@ export class Cell {
 	#col: number
 	#value: number // 0 for empty, number for clue
 	#state: 'unmarked' | 'marked' | 'blocked' = $state('unmarked')
-	#grid: Grid
-	#markedCount = $derived(this.#getLocalGrid().filter((cell) => cell.state === 'marked').length)
+	#getMarkedCount: (cell: Cell) => number
 
-	constructor(options: { row: number; col: number; value?: number; grid: Grid }) {
+	constructor(options: {
+		row: number
+		col: number
+		value?: number
+		getMarkedCount?: (cell: Cell) => number
+	}) {
 		this.#row = options.row
 		this.#col = options.col
 		this.#value = options.value ?? 0
 		this.#state = 'unmarked'
-		this.#grid = options.grid
+		this.#getMarkedCount = options.getMarkedCount ?? (() => 0)
 	}
 
-	get markedCount() {
-		return this.#markedCount
+	get markedCount(): number {
+		return this.#getMarkedCount(this)
 	}
 
 	get row() {
@@ -75,11 +85,6 @@ export class Cell {
 	}
 	get state() {
 		return this.#state
-	}
-
-	// Get 3x3 local grid including self
-	#getLocalGrid(): Cell[] {
-		return this.#grid.getLocalGrid(this)
 	}
 
 	toggleState() {
