@@ -16,7 +16,7 @@
 		</button>
 		<button
 			class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-			onclick={() => game.check()}
+			onclick={(e) => (e.currentTarget.innerText = String(game.check()))}
 		>
 			check answer
 		</button>
