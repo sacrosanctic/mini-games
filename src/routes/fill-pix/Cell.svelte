@@ -29,6 +29,12 @@
 		get state() {
 			return this.#state
 		}
+		set state(val) {
+			// Update if we are resetting to 'unmarked' OR if the current state is 'unmarked'
+			if (val === 'unmarked' || this.#state === 'unmarked') {
+				this.#state = val
+			}
+		}
 
 		toggleState() {
 			if (this.#state === 'unmarked') {
@@ -49,9 +55,11 @@
 	interface Props {
 		cell: PublicInterface<Entity>
 		filledCount: number
+		onMouseDown?: (cell: PublicInterface<Entity>) => void
+		onMouseEnter?: (cell: PublicInterface<Entity>) => void
 	}
 
-	let { cell, filledCount }: Props = $props()
+	let { cell, filledCount, onMouseDown, onMouseEnter }: Props = $props()
 </script>
 
 <button
@@ -61,7 +69,8 @@
 		cell.state === 'marked' && 'bg-black text-white dark:bg-gray-600 ',
 		filledCount === 9 && 'text-gray-300 dark:text-gray-500',
 	)}
-	onclick={() => cell.toggleState()}
+	onmousedown={() => onMouseDown?.(cell)}
+	onmouseenter={() => onMouseEnter?.(cell)}
 >
 	{cell.value > 0 ? cell.value : ''}
 	{#if cell.state === 'blocked'}
