@@ -1,14 +1,15 @@
 import * as Cell from './Cell.svelte'
+import { getLocalGrid } from './utils'
 
 export class FillPixGame {
 	#grid: Cell.Entity[][]
 	#width: number
 	#height: number
 
-	constructor(width: number, height: number) {
+	constructor(width: number, height: number, map?: boolean[][]) {
 		this.#width = width
 		this.#height = height
-		this.#grid = this.#createCells()
+		this.#grid = this.#createCells(map)
 	}
 	get width() {
 		return this.#width
@@ -17,13 +18,13 @@ export class FillPixGame {
 		return this.#grid
 	}
 
-	#createCells(): Cell.Entity[][] {
+	#createCells(map?: boolean[][]): Cell.Entity[][] {
 		const cells: Cell.Entity[][] = []
 		for (let r = 0; r < this.#height; r++) {
 			cells[r] = []
 			for (let c = 0; c < this.#width; c++) {
-				// For now, random clues; replace with proper generator
-				const hint = Math.random() < 0.3 ? Math.floor(Math.random() * 9) + 1 : 0
+				const randomHint = () => (Math.random() < 0.3 ? Math.floor(Math.random() * 9) + 1 : 0)
+				const hint = map ? getLocalGrid(map, r, c).length : randomHint()
 
 				const minR = Math.max(0, r - 1)
 				const maxR = Math.min(this.#height - 1, r + 1)
@@ -44,17 +45,7 @@ export class FillPixGame {
 
 	// Get 3x3 local grid including self
 	#getLocalGrid(cell: Cell.Entity): Cell.Entity[] {
-		const cells: Cell.Entity[] = []
-		for (let dr = -1; dr <= 1; dr++) {
-			for (let dc = -1; dc <= 1; dc++) {
-				const nr = cell.row + dr
-				const nc = cell.col + dc
-				if (nr >= 0 && nr < this.#height && nc >= 0 && nc < this.#width) {
-					cells.push(this.#grid[nr][nc])
-				}
-			}
-		}
-		return cells
+		return getLocalGrid(this.#grid, cell.row, cell.col)
 	}
 
 	getFilled(cell: Cell.Entity): number {
