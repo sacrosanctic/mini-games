@@ -13,7 +13,7 @@ export class FillPixGame {
 		this.#width = width
 		this.#height = height
 		const puzzle = generateFillPixPuzzle(width, height)
-		this.#grid = this.#createCells(puzzle.map)
+		this.#grid = this.#createCells(puzzle)
 	}
 
 	get width() {

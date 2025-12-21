@@ -1,9 +1,6 @@
 import { getLocalGrid } from './utils'
 
-type Puzzle = {
-	map: boolean[][]
-	visibleHints: { row: number; col: number }[]
-}
+type Puzzle = boolean[][]
 
 function generateRandomMap(width: number, height: number): boolean[][] {
 	const map: boolean[][] = []
@@ -97,5 +94,5 @@ export function generateFillPixPuzzle(width: number, height: number): Puzzle {
 		}
 	}
 
-	return { map, visibleHints }
+	return map
 }
