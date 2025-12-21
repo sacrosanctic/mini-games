@@ -11,7 +11,7 @@ export class FillPixGame {
 	constructor(width: number, height: number) {
 		this.#width = width
 		this.#height = height
-		this.#grid = this.#createCells(generateFillPixPuzzle(width, height, 'default'))
+		this.#grid = this.#createCells(generateFillPixPuzzle(width, height, 'random'))
 	}
 
 	get width() {
@@ -31,7 +31,7 @@ export class FillPixGame {
 		for (let r = 0; r < this.#height; r++) {
 			cells[r] = []
 			for (let c = 0; c < this.#width; c++) {
-				const hint = getLocalGrid(map, r, c).length
+				const hint = getLocalGrid(map, r, c).filter((cell) => cell).length
 
 				const minR = Math.max(0, r - 1)
 				const maxR = Math.min(this.#height - 1, r + 1)
