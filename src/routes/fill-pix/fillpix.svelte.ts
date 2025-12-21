@@ -7,7 +7,7 @@ export class FillPixGame {
 	#grid: Cell.Entity[][] = $state([])
 	#width: number
 	#height: number
-	#autoFillMode = $state(false)
+	#autoFillMode = $state(true)
 
 	constructor(width: number, height: number) {
 		this.#width = width
@@ -81,7 +81,10 @@ export class FillPixGame {
 		for (let r = 0; r < this.#height; r++) {
 			for (let c = 0; c < this.#width; c++) {
 				const cell = this.#grid[r][c]
-				if (cell.localCells.length !== cell.hint) return false
+				const playerFilledCount = cell.localCells.filter(
+					(localCell) => localCell.state === 'marked',
+				).length
+				if (playerFilledCount !== cell.hint) return false
 				if (cell.state === 'unmarked') return false
 			}
 		}
