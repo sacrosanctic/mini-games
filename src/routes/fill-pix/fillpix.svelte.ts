@@ -18,6 +18,10 @@ export class FillPixGame {
 		return this.#width
 	}
 
+	get height() {
+		return this.#height
+	}
+
 	get grid() {
 		return this.#grid
 	}
