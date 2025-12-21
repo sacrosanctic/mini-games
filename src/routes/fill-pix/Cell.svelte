@@ -20,8 +20,8 @@
 			this.#getMarkedCount = options.getMarkedCount ?? (() => 0)
 		}
 
-		get markedCount(): number {
-			return this.#getMarkedCount(this)
+		get isFilled(): boolean {
+			return this.#getMarkedCount(this) >= this.#value
 		}
 
 		get row() {
@@ -50,6 +50,7 @@
 </script>
 
 <script lang="ts">
+	import { twMerge } from 'tailwind-merge'
 	type PublicInterface<T> = Pick<T, keyof T>
 
 	interface Props {
@@ -60,19 +61,33 @@
 </script>
 
 <button
-	class={[
-		'relative flex size-10 cursor-pointer items-center justify-center border border-gray-300 text-2xl  dark:border-gray-600 dark:text-white',
-		cell.state === 'unmarked' && 'bg-white dark:bg-gray-800',
-		cell.state === 'marked' && 'bg-black text-white dark:bg-gray-700 dark:text-black',
-		cell.value >= cell.markedCount && 'text-gray-300 dark:text-gray-500',
-	]}
+	class={twMerge(
+		'relative flex size-10 cursor-pointer items-center justify-center border border-gray-300 text-2xl ',
+		'bg-white dark:border-gray-600 dark:bg-gray-800 dark:text-white',
+		cell.state === 'marked' && 'bg-black text-white dark:bg-gray-600 ',
+		cell.isFilled && 'text-gray-300 dark:text-gray-500',
+	)}
 	onclick={() => cell.toggleState()}
 >
 	{cell.value > 0 ? cell.value : ''}
 	{#if cell.state === 'blocked'}
 		<svg class="absolute inset-0 size-full">
-			<line x1="10%" y1="10%" x2="90%" y2="90%" stroke="black" stroke-width="1" />
-			<line x1="90%" y1="10%" x2="10%" y2="90%" stroke="black" stroke-width="1" />
+			<line
+				x1="10%"
+				y1="10%"
+				x2="90%"
+				y2="90%"
+				class={['stroke-black dark:stroke-gray-400']}
+				stroke-width="1"
+			/>
+			<line
+				x1="90%"
+				y1="10%"
+				x2="10%"
+				y2="90%"
+				class={['stroke-black dark:stroke-gray-400']}
+				stroke-width="1"
+			/>
 		</svg>
 	{/if}
 </button>
