@@ -1,6 +1,6 @@
-type Algo = (width: number, height: number) => boolean[][]
+type Generator = (width: number, height: number) => boolean[][]
 
-const name: Algo = (width, height) => {
+const name: Generator = (width, height) => {
 	// Generate a simple rectangular pattern in the center
 	const map: boolean[][] = []
 
