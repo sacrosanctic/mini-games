@@ -10,16 +10,14 @@
 	})
 </script>
 
-<Story name="Unmarked" args={{ cell: new Cell({ row: 0, col: 0, value: 1 }) }} />
-
 <Story
 	name="Unmarked-light"
-	args={{ cell: new Cell({ row: 0, col: 0, value: 1 }) }}
+	args={{ cell: new Cell({ row: 0, col: 0, value: 1, getMarkedCount: () => 9 }) }}
 	globals={{ theme: 'light' }}
 />
 
 <Story
 	name="Unmarked-dark"
-	args={{ cell: new Cell({ row: 0, col: 0, value: 1 }) }}
+	args={{ cell: new Cell({ row: 0, col: 0, value: 1, getMarkedCount: () => 9 }) }}
 	globals={{ theme: 'dark' }}
 />
