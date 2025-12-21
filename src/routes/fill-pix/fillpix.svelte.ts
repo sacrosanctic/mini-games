@@ -24,6 +24,13 @@ class Grid {
 			for (let c = 0; c < this.#width; c++) {
 				// For now, random clues; replace with proper generator
 				const hint = Math.random() < 0.3 ? Math.floor(Math.random() * 9) + 1 : 0
+
+				const minR = Math.max(0, r - 1)
+				const maxR = Math.min(this.#height - 1, r + 1)
+				const minC = Math.max(0, c - 1)
+				const maxC = Math.min(this.#width - 1, c + 1)
+				const totalCells = (maxR - minR + 1) * (maxC - minC + 1)
+
 				cells[r][c] = new Cell.Entity({
 					row: r,
 					col: c,
