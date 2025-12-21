@@ -10,18 +10,22 @@ const preview: Preview = {
 				date: /Date$/i,
 			},
 		},
+		// add the theme options to the toolbar
 		themes: {
 			default: 'system',
 			list: [
-				{ name: 'system', class: '', color: '#ffffff' },
-				{ name: 'light', class: '', color: '#ffffff' },
-				{ name: 'dark', class: 'dark bg-neutral-900', color: '#000000' },
+				{ name: 'system', class: '' },
+				{ name: 'light', class: '' },
+				{ name: 'dark', class: 'dark bg-neutral-900' },
 			],
 		},
+		// https://github.com/storybookjs/storybook/discussions/25183#discussioncomment-9646359
+		// disable as it conflicts with themes
 		backgrounds: { disable: true },
 	},
 }
 
+// actually apply the themes
 export const decorators = [
 	withThemeByClassName({
 		themes: {
