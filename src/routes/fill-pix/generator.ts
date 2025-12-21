@@ -1,10 +1,6 @@
-export interface FillPixPuzzle {
-	width: number
-	height: number
-	map: boolean[][]
-}
+type Algo = (width: number, height: number) => boolean[][]
 
-export function generateFillPixPuzzle(width: number, height: number): FillPixPuzzle {
+const name: Algo = (width, height) => {
 	// Generate a simple rectangular pattern in the center
 	const map: boolean[][] = []
 
@@ -17,6 +13,13 @@ export function generateFillPixPuzzle(width: number, height: number): FillPixPuz
 			map[r][c] = filled
 		}
 	}
+	return map
+}
 
-	return { width, height, map }
+const algoMap = {
+	default: name,
+}
+
+export function generateFillPixPuzzle(width: number, height: number, algo: keyof typeof algoMap) {
+	return (algoMap[algo] ?? name)(width, height)
 }

@@ -1,16 +1,17 @@
 import * as Cell from './Cell.svelte'
 import { getLocalGrid } from './utils'
 
+import { generateFillPixPuzzle } from './generator'
 export class FillPixGame {
 	#grid: Cell.Entity[][]
 	#width: number
 	#height: number
 	#autoFillMode = $state(false)
 
-	constructor(options: { width: number; height: number; map: boolean[][] }) {
-		this.#width = options.width
-		this.#height = options.height
-		this.#grid = this.#createCells(options.map)
+	constructor(width: number, height: number) {
+		this.#width = width
+		this.#height = height
+		this.#grid = this.#createCells(generateFillPixPuzzle(width, height, 'default'))
 	}
 
 	get width() {
