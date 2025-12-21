@@ -1,5 +1,7 @@
+import * as Cell from './Cell.svelte'
+
 class Grid {
-	#cells: Cell[][]
+	#cells: Cell.Entity[][]
 	#width: number
 	#height: number
 
@@ -15,18 +17,18 @@ class Grid {
 		return this.#cells
 	}
 
-	#createCells(): Cell[][] {
-		const cells: Cell[][] = []
+	#createCells(): Cell.Entity[][] {
+		const cells: Cell.Entity[][] = []
 		for (let r = 0; r < this.#height; r++) {
 			cells[r] = []
 			for (let c = 0; c < this.#width; c++) {
 				// For now, random clues; replace with proper generator
 				const value = Math.random() < 0.3 ? Math.floor(Math.random() * 9) + 1 : 0
-				cells[r][c] = new Cell({
+				cells[r][c] = new Cell.Entity({
 					row: r,
 					col: c,
 					value,
-					getMarkedCount: (currentCell: Cell) =>
+					getMarkedCount: (currentCell: Cell.Entity) =>
 						this.#getLocalGrid(currentCell).filter((cell) => cell.state === 'marked').length,
 				})
 			}
@@ -35,8 +37,8 @@ class Grid {
 	}
 
 	// Get 3x3 local grid including self
-	#getLocalGrid(cell: Cell): Cell[] {
-		const cells: Cell[] = []
+	#getLocalGrid(cell: Cell.Entity): Cell.Entity[] {
+		const cells: Cell.Entity[] = []
 		for (let dr = -1; dr <= 1; dr++) {
 			for (let dc = -1; dc <= 1; dc++) {
 				const nr = cell.row + dr
@@ -47,55 +49,6 @@ class Grid {
 			}
 		}
 		return cells
-	}
-}
-
-export class Cell {
-	#row: number
-	#col: number
-	#value: number // 0 for empty, number for clue
-	#state: 'unmarked' | 'marked' | 'blocked'
-	#getMarkedCount: (cell: Cell) => number
-
-	constructor(options: {
-		row: number
-		col: number
-		value?: number
-		state?: 'unmarked' | 'marked' | 'blocked'
-		getMarkedCount?: (cell: Cell) => number
-	}) {
-		this.#row = options.row
-		this.#col = options.col
-		this.#value = options.value ?? 0
-		this.#state = $state(options.state ?? 'unmarked')
-		this.#getMarkedCount = options.getMarkedCount ?? (() => 0)
-	}
-
-	get markedCount(): number {
-		return this.#getMarkedCount(this)
-	}
-
-	get row() {
-		return this.#row
-	}
-	get col() {
-		return this.#col
-	}
-	get value() {
-		return this.#value
-	}
-	get state() {
-		return this.#state
-	}
-
-	toggleState() {
-		if (this.#state === 'unmarked') {
-			this.#state = 'marked'
-		} else if (this.#state === 'marked') {
-			this.#state = 'blocked'
-		} else {
-			this.#state = 'unmarked'
-		}
 	}
 }
 

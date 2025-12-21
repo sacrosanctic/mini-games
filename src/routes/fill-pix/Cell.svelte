@@ -1,8 +1,61 @@
-<script lang="ts">
-	import type { Cell } from './fillpix.svelte.ts'
+<script lang="ts" module>
+	export class Entity {
+		#row: number
+		#col: number
+		#value: number
+		#state: 'unmarked' | 'marked' | 'blocked'
+		#getMarkedCount: (cell: Entity) => number
 
+		constructor(options: {
+			row: number
+			col: number
+			value?: number
+			state?: 'unmarked' | 'marked' | 'blocked'
+			getMarkedCount?: (cell: Entity) => number
+		}) {
+			this.#row = options.row
+			this.#col = options.col
+			this.#value = options.value ?? 0
+			this.#state = $state(options.state ?? 'unmarked')
+			this.#getMarkedCount = options.getMarkedCount ?? (() => 0)
+		}
+
+		get markedCount(): number {
+			return this.#getMarkedCount(this)
+		}
+
+		getMarkedCount() {
+			return this.markedCount
+		}
+
+		get row() {
+			return this.#row
+		}
+		get col() {
+			return this.#col
+		}
+		get value() {
+			return this.#value
+		}
+		get state() {
+			return this.#state
+		}
+
+		toggleState() {
+			if (this.#state === 'unmarked') {
+				this.#state = 'marked'
+			} else if (this.#state === 'marked') {
+				this.#state = 'blocked'
+			} else {
+				this.#state = 'unmarked'
+			}
+		}
+	}
+</script>
+
+<script lang="ts">
 	interface Props {
-		cell: Cell
+		cell: Entity
 	}
 
 	let { cell }: Props = $props()
