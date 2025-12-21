@@ -4,24 +4,17 @@
 		#col: number
 		#value: number
 		#state: 'unmarked' | 'marked' | 'blocked'
-		#getMarkedCount: (cell: Entity) => number
 
 		constructor(options: {
 			row: number
 			col: number
 			value?: number
 			state?: 'unmarked' | 'marked' | 'blocked'
-			getMarkedCount?: (cell: Entity) => number
 		}) {
 			this.#row = options.row
 			this.#col = options.col
 			this.#value = options.value ?? 0
 			this.#state = $state(options.state ?? 'unmarked')
-			this.#getMarkedCount = options.getMarkedCount ?? (() => 0)
-		}
-
-		get isFilled(): boolean {
-			return this.#getMarkedCount(this) >= this.#value
 		}
 
 		get row() {
@@ -55,9 +48,10 @@
 
 	interface Props {
 		cell: PublicInterface<Entity>
+		filledCount: number
 	}
 
-	let { cell }: Props = $props()
+	let { cell, filledCount }: Props = $props()
 </script>
 
 <button
@@ -65,7 +59,7 @@
 		'relative flex size-10 cursor-pointer items-center justify-center border  text-2xl',
 		'border-gray-300 bg-white dark:border-gray-500 dark:bg-gray-800 dark:text-white',
 		cell.state === 'marked' && 'bg-black text-white dark:bg-gray-600 ',
-		cell.isFilled && 'text-gray-300 dark:text-gray-500',
+		filledCount === 9 && 'text-gray-300 dark:text-gray-500',
 	)}
 	onclick={() => cell.toggleState()}
 >

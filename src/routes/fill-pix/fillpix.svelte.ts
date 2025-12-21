@@ -28,8 +28,6 @@ class Grid {
 					row: r,
 					col: c,
 					value,
-					getMarkedCount: (currentCell: Cell.Entity) =>
-						this.#getLocalGrid(currentCell).filter((cell) => cell.state === 'marked').length,
 				})
 			}
 		}
@@ -49,6 +47,10 @@ class Grid {
 			}
 		}
 		return cells
+	}
+
+	getFilled(cell: Cell.Entity): number {
+		return this.#getLocalGrid(cell).filter((c) => c.state !== 'unmarked').length
 	}
 }
 

@@ -10,7 +10,7 @@
 	<div class="grid" style="grid-template-columns: repeat({game.grid.width}, minmax(0, 1fr))">
 		{#each game.grid.cells as row, _r (_r)}
 			{#each row as cell, _c (cell.row + '-' + cell.col)}
-				<Cell {cell} />
+				<Cell {cell} filledCount={game.grid.getFilled(cell)} />
 			{/each}
 		{/each}
 	</div>
