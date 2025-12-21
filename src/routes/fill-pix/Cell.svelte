@@ -24,10 +24,6 @@
 			return this.#getMarkedCount(this)
 		}
 
-		getMarkedCount() {
-			return this.markedCount
-		}
-
 		get row() {
 			return this.#row
 		}
@@ -54,8 +50,10 @@
 </script>
 
 <script lang="ts">
+	type PublicInterface<T> = Pick<T, keyof T>
+
 	interface Props {
-		cell: Entity
+		cell: PublicInterface<Entity>
 	}
 
 	let { cell }: Props = $props()
@@ -67,7 +65,7 @@
 		cell.state === 'unmarked' && 'bg-white dark:bg-gray-800',
 		cell.state === 'marked' && 'bg-black text-white dark:bg-gray-700 dark:text-black',
 		cell.state === 'blocked' && 'bg-gray-200  dark:bg-gray-700 ',
-		cell.markedCount >= cell.value && 'text-gray-300 dark:text-gray-500',
+		cell.value >= cell.markedCount && 'text-gray-300 dark:text-gray-500',
 	]}
 	onclick={() => cell.toggleState()}
 >
