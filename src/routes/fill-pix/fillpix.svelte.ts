@@ -7,7 +7,7 @@ export class FillPixGame {
 	#height: number
 	#autoFillMode = $state(false)
 
-	constructor(options: { width: number; height: number; map?: boolean[][] }) {
+	constructor(options: { width: number; height: number; map: boolean[][] }) {
 		this.#width = options.width
 		this.#height = options.height
 		this.#grid = this.#createCells(options.map)
@@ -25,13 +25,12 @@ export class FillPixGame {
 		return this.#autoFillMode
 	}
 
-	#createCells(map?: boolean[][]): Cell.Entity[][] {
+	#createCells(map: boolean[][]): Cell.Entity[][] {
 		const cells: Cell.Entity[][] = []
 		for (let r = 0; r < this.#height; r++) {
 			cells[r] = []
 			for (let c = 0; c < this.#width; c++) {
-				const randomHint = () => (Math.random() < 0.3 ? Math.floor(Math.random() * 9) + 1 : 0)
-				const hint = map ? getLocalGrid(map, r, c).length : randomHint()
+				const hint = getLocalGrid(map, r, c).length
 
 				const minR = Math.max(0, r - 1)
 				const maxR = Math.min(this.#height - 1, r + 1)

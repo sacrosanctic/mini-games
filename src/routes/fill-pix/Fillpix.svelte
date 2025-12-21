@@ -4,7 +4,7 @@
 	import { generateFillPixPuzzle } from './generator'
 
 	const puzzle = generateFillPixPuzzle(10, 10)
-	const game = new FillPixGame({ width: 10, height: 10 })
+	const game = new FillPixGame(puzzle)
 	game
 
 	class DragHandler {
