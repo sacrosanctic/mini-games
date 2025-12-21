@@ -2,7 +2,8 @@
 	import Cell from './Cell.svelte'
 	import { FillPixGame } from './fillpix.svelte.ts'
 
-	const game = new FillPixGame()
+	const game = new FillPixGame(5, 5)
+	game
 
 	class DragHandler {
 		isDragging = $state(false)
@@ -32,15 +33,12 @@
 
 <div class="flex h-screen flex-col items-center p-4 dark:bg-gray-900">
 	<h1 class="mb-4 text-2xl font-bold dark:text-white">Fill-Pix Puzzle</h1>
-	<div
-		class="grid select-none"
-		style:grid-template-columns="repeat({game.grid.width}, minmax(0, 1fr))"
-	>
-		{#each game.grid.cells as row, _r (_r)}
-			{#each row as cell, _c (cell.row + '-' + cell.col)}
+	<div class="grid select-none" style:grid-template-columns="repeat({game.width}, minmax(0, 1fr))">
+		{#each game.grid as row (row)}
+			{#each row as cell (cell)}
 				<Cell
 					{cell}
-					filledCount={game.grid.getFilled(cell)}
+					filledCount={game.getFilled(cell)}
 					onMouseDown={() => dragHandler.handleMouseDown(cell)}
 					onMouseEnter={() => dragHandler.handleMouseEnter(cell)}
 				/>

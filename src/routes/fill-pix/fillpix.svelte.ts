@@ -1,20 +1,20 @@
 import * as Cell from './Cell.svelte'
 
-class Grid {
-	#cells: Cell.Entity[][]
+export class FillPixGame {
+	#grid: Cell.Entity[][]
 	#width: number
 	#height: number
 
 	constructor(width: number, height: number) {
 		this.#width = width
 		this.#height = height
-		this.#cells = this.#createCells()
+		this.#grid = this.#createCells()
 	}
 	get width() {
 		return this.#width
 	}
-	get cells() {
-		return this.#cells
+	get grid() {
+		return this.#grid
 	}
 
 	#createCells(): Cell.Entity[][] {
@@ -50,7 +50,7 @@ class Grid {
 				const nr = cell.row + dr
 				const nc = cell.col + dc
 				if (nr >= 0 && nr < this.#height && nc >= 0 && nc < this.#width) {
-					cells.push(this.#cells[nr][nc])
+					cells.push(this.#grid[nr][nc])
 				}
 			}
 		}
@@ -60,14 +60,4 @@ class Grid {
 	getFilled(cell: Cell.Entity): number {
 		return this.#getLocalGrid(cell).filter((c) => c.state !== 'unmarked').length
 	}
-}
-
-export class FillPixGame {
-	grid: Grid
-
-	constructor(width = 10, height = 10) {
-		this.grid = new Grid(width, height)
-	}
-
-	// Add methods for game logic, validation, etc.
 }
