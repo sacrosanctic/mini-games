@@ -27,23 +27,14 @@
 			this.isDragging = false
 		}
 	}
-
-	const dragHandler = new DragHandler()
 </script>
-
-<svelte:body onmouseup={() => dragHandler.handleMouseUp()} />
 
 <div class="flex h-screen flex-col items-center p-4 dark:bg-gray-900">
 	<h1 class="mb-4 text-2xl font-bold dark:text-white">Fill-Pix Puzzle</h1>
 	<div class="grid select-none" style:grid-template-columns="repeat({game.width}, minmax(0, 1fr))">
 		{#each game.grid as row (row)}
 			{#each row as cell (cell)}
-				<Cell
-					{cell}
-					filledCount={game.getFilled(cell)}
-					onMouseDown={() => dragHandler.handleMouseDown(cell)}
-					onMouseEnter={() => dragHandler.handleMouseEnter(cell)}
-				/>
+				<Cell {cell} filledCount={game.getFilled(cell)} onclick={() => cell.toggleState()} />
 			{/each}
 		{/each}
 	</div>
