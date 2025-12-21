@@ -14,15 +14,22 @@
 						'flex size-10 cursor-pointer items-center justify-center border border-gray-300 text-sm dark:border-gray-600',
 						cell.state === 'unmarked' && 'bg-white dark:bg-gray-800',
 						cell.state === 'marked' && 'bg-black text-white dark:bg-white dark:text-black',
-						cell.state === 'blocked' &&
-							'bg-gray-200 text-red-500 dark:bg-gray-700 dark:text-red-400',
+						cell.state === 'blocked' && 'bg-gray-200  dark:bg-gray-700 ',
 						cell.value > 0 && 'font-bold',
 					]}
 					onclick={() => cell.toggleState()}
 				>
-					{cell.value > 0 ? cell.value : cell.state === 'blocked' ? 'X' : ''}
+					{cell.value > 0 ? cell.value : ''}
+					{#if cell.state === 'blocked'}{@render xmark()}{/if}
 				</button>
 			{/each}
 		{/each}
 	</div>
 </div>
+
+{#snippet xmark()}
+	<svg class="inset-0 h-full w-full">
+		<line x1="10%" y1="10%" x2="90%" y2="90%" fill="green" stroke-width="2" />
+		<line x1="90%" y1="10%" x2="10%" y2="90%" fill="green" stroke-width="2" />
+	</svg>
+{/snippet}
