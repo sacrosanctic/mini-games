@@ -1,10 +1,12 @@
 // DO NOT RENAME THIS IMPORT
 import * as Cell from './Cell.svelte'
+import { StateHistory } from 'runed'
 import { getLocalGrid } from './utils'
 import { generateFillPixPuzzle } from './generator'
 
 export class FillPixGame {
 	#grid: Cell.Entity[][] = $state([])
+	#gridHistory: StateHistory<Cell.Entity[][]>
 	#width: number
 	#height: number
 	#autoFillMode = $state(true)
@@ -14,6 +16,9 @@ export class FillPixGame {
 		this.#height = height
 		const puzzle = generateFillPixPuzzle(width, height)
 		this.#grid = this.#createCells(puzzle)
+		this.#gridHistory = new StateHistory(this.#grid, (value) => {
+			this.#grid = value
+		})
 	}
 
 	get width() {
@@ -26,6 +31,10 @@ export class FillPixGame {
 
 	get grid() {
 		return this.#grid
+	}
+
+	get gridHistory() {
+		return this.#gridHistory
 	}
 
 	get autoFillMode() {
@@ -70,6 +79,22 @@ export class FillPixGame {
 
 	toggleAutoFillMode() {
 		this.#autoFillMode = !this.#autoFillMode
+	}
+
+	undo() {
+		this.#gridHistory.undo()
+	}
+
+	redo() {
+		this.#gridHistory.redo()
+	}
+
+	get canUndo() {
+		return this.#gridHistory.canUndo
+	}
+
+	get canRedo() {
+		return this.#gridHistory.canRedo
 	}
 
 	handleCellClick(cell: Cell.Entity) {

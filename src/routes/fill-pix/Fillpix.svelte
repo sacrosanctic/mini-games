@@ -8,11 +8,21 @@
 <div class="flex h-screen flex-col-reverse items-center sm:flex-col dark:bg-gray-900">
 	<h1 class="my-4 hidden text-2xl font-bold sm:block dark:text-white">Fill-Pix Puzzle</h1>
 	<div class="mb-4 flex gap-8 text-white sm:gap-4">
-		<button class="flex cursor-pointer items-center gap-1" aria-label="undo">
+		<button
+			class="flex cursor-pointer items-center gap-1"
+			disabled={!game.canUndo}
+			onclick={() => game.undo()}
+			aria-label="undo"
+		>
 			<span class="icon-[mdi--undo] size-8"></span>
 			<span class="hidden sm:inline">undo</span>
 		</button>
-		<button class="flex cursor-pointer items-center gap-1" aria-label="redo">
+		<button
+			class="flex cursor-pointer items-center gap-1"
+			disabled={!game.canRedo}
+			onclick={() => game.redo()}
+			aria-label="redo"
+		>
 			<span class="icon-[mdi--redo] size-8"></span>
 			<span class="hidden sm:inline">redo</span>
 		</button>
