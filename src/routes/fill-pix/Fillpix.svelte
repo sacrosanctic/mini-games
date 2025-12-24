@@ -63,7 +63,12 @@
 		>
 			{#each game.grid as row (row)}
 				{#each row as cell (cell)}
-					<Cell {cell} onclick={() => game.handleCellClick(cell)} />
+					<Cell
+						hint={cell.hint}
+						state={cell.state}
+						isComplete={cell.filledCount >= cell.localCells.length}
+						onclick={() => game.handleCellClick(cell)}
+					/>
 				{/each}
 			{/each}
 		</div>

@@ -1,12 +1,12 @@
 // DO NOT RENAME THIS IMPORT
-import * as Cell from './Cell.svelte'
+import { Cell } from './cell.svelte'
 import { StateHistory } from 'runed'
 import { getLocalGrid } from './utils'
 import { generateFillPixPuzzle } from './generator'
 
 export class FillPixGame {
-	#grid: Cell.Entity[][] = $state([])
-	#gridHistory: StateHistory<Cell.Entity[][]>
+	#grid: Cell[][] = $state([])
+	#gridHistory: StateHistory<Cell[][]>
 	#width: number
 	#height: number
 	#autoFillMode = $state(true)
@@ -41,11 +41,11 @@ export class FillPixGame {
 		return this.#autoFillMode
 	}
 
-	#createCells(map: boolean[][]): Cell.Entity[][] {
+	#createCells(map: boolean[][]): Cell[][] {
 		return map.map((row, y) =>
 			row.map(
 				(shouldFill, x) =>
-					new Cell.Entity({
+					new Cell({
 						x,
 						y,
 						shouldFill,
@@ -55,15 +55,15 @@ export class FillPixGame {
 		)
 	}
 
-	#getLocalGrid(cell: Cell.Entity): Cell.Entity[] {
+	#getLocalGrid(cell: Cell): Cell[] {
 		return getLocalGrid(this.#grid, cell.y, cell.x)
 	}
 
-	toggleCell(cell: Cell.Entity) {
+	toggleCell(cell: Cell) {
 		cell.toggleState()
 	}
 
-	autoFill(cell: Cell.Entity) {
+	autoFill(cell: Cell) {
 		const localCells = this.#getLocalGrid(cell)
 		const totalMarked = localCells.filter((c) => c.state === 'marked').length
 
@@ -97,7 +97,7 @@ export class FillPixGame {
 		return this.#gridHistory.canRedo
 	}
 
-	handleCellClick(cell: Cell.Entity) {
+	handleCellClick(cell: Cell) {
 		if (this.#autoFillMode) this.autoFill(cell)
 		else this.toggleCell(cell)
 	}
