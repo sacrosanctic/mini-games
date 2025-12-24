@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Cell from './Cell.svelte'
+	import Cell from './cell.svelte'
 	import { FillPixGame } from './fillpix.svelte.ts'
 
 	const game = new FillPixGame(10, 10)
