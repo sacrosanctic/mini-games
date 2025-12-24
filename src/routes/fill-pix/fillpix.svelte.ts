@@ -1,4 +1,3 @@
-// DO NOT RENAME THIS IMPORT
 import { Cell } from './cell.svelte'
 import { StateHistory } from 'runed'
 import { getLocalGrid } from './utils'
