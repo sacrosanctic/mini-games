@@ -14,6 +14,7 @@
 		},
 		args: {
 			onclick: fn(),
+			hint: 2,
 		},
 	})
 </script>

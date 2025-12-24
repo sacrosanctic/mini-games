@@ -11,25 +11,23 @@
 
 	let { hint, state, isComplete = false, onclick }: Props = $props()
 
-	const flashRed: Attachment<HTMLElement> = (node) => {
-		let first = true
-		$effect(() => {
-			void state
-			if (first) first = false
-			else {
-				node.style.transition = 'none'
-				node.classList.add('!bg-red-500')
-				setTimeout(() => {
-					node.style.transition = 'background-color 1s ease-out'
-					node.classList.remove('!bg-red-500')
-				}, 500)
-			}
-		})
+	const flashRed: (input: string) => Attachment<HTMLElement> = (_) => (node) => {
+		if (!node.dataset.flashRedFirstRun) {
+			node.dataset.flashRedFirstRun = 'true'
+			return
+		}
+
+		node.style.transition = 'none'
+		node.classList.add('!bg-red-500')
+		setTimeout(() => {
+			node.style.transition = 'background-color 1s ease-out'
+			node.classList.remove('!bg-red-500')
+		}, 500)
 	}
 </script>
 
 <button
-	{@attach flashRed}
+	{@attach flashRed(state)}
 	class={twMerge(
 		'relative flex size-10 cursor-pointer items-center justify-center border text-3xl',
 		'border-gray-300 bg-white dark:border-gray-500 dark:bg-gray-800 dark:text-white',
