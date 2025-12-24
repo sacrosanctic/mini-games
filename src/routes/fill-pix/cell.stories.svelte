@@ -6,12 +6,14 @@
 	const { Story } = defineMeta({
 		title: 'FillPix/Cell',
 		component: Cell,
-		args: {
-			onclick: fn(),
+		argTypes: {
 			state: {
 				control: { type: 'select' },
 				options: ['unmarked', 'marked', 'blocked'],
 			},
+		},
+		args: {
+			onclick: fn(),
 		},
 	})
 </script>
