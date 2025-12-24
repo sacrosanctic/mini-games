@@ -7,7 +7,7 @@
 
 <div class="flex h-screen flex-col-reverse items-center sm:flex-col dark:bg-gray-900">
 	<h1 class="my-4 hidden text-2xl font-bold sm:block dark:text-white">Fill-Pix Puzzle</h1>
-	<div class="mb-4 flex gap-8 text-white sm:gap-4">
+	<div class="mb-4 flex gap-8 text-black sm:gap-4 dark:text-white">
 		<button
 			class="flex cursor-pointer items-center gap-1"
 			disabled={!game.canUndo}

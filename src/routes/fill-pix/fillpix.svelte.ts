@@ -1,4 +1,4 @@
-import { Cell } from './cell.svelte'
+import { Cell } from './cell.svelte.ts'
 import { StateHistory } from 'runed'
 import { getLocalGrid } from './utils'
 import { generateFillPixPuzzle } from './generator'
