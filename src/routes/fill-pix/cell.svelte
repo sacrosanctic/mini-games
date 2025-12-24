@@ -35,6 +35,7 @@
 		isComplete && 'text-gray-300 dark:text-gray-500',
 	)}
 	{onclick}
+	aria-label="cell"
 >
 	{hint || ''}
 	{#if state === 'blocked'}
